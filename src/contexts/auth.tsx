@@ -113,9 +113,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
       router.push("/");
 
+      const errorMessage = e instanceof Error ? e.message : e.data.message;
+
       toast({
         title: "Erro.",
-        description: e.response.data.message,
+        description: errorMessage,
         status: "error",
         duration: 2500,
         isClosable: true,
@@ -152,9 +154,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (e: any) {
       console.log(e);
 
+      const errorMessage = e instanceof Error ? e.message : e.data.message;
+
       toast({
         title: "Erro.",
-        description: e.response.data.message,
+        description: errorMessage,
         status: "error",
         duration: 2500,
         isClosable: true,
@@ -194,9 +198,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     } catch (e: any) {
       console.log(e);
+
+      const errorMessage = e instanceof Error ? e.message : e.data.message;
+
       toast({
         title: "Erro.",
-        description: e.response.data.message,
+        description: errorMessage,
         status: "error",
         duration: 2500,
         isClosable: true,

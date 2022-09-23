@@ -64,18 +64,20 @@ const Main: NextPage = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.75 } }}
         exit={{ opacity: 0 }}
+        spacing="57px"
         minH="100vh"
         direction={{ base: "column", md: "row" }}
         role="index/stack"
       >
-        <Flex flex={1}>
+        <Flex flex={1} alignSelf="center" justifyContent="end" ml="auto">
           <Image
             alt="Login Image"
-            objectFit="cover"
-            src="/static/images/mind-wp.jpeg"
+            w="622"
+            h="622"
+            src="/static/images/tablet-login.png"
           />
         </Flex>
-        <Flex p={8} flex={1} align={"center"} justify={"center"}>
+        <Flex p={8} flex={1} align={"center"} justify={"start"}>
           <Stack
             as="form"
             onSubmit={handleSubmit(() => Login(values.email, values.password))}
@@ -83,7 +85,9 @@ const Main: NextPage = () => {
             w={"full"}
             maxW={"md"}
           >
-            <Heading role="index/heading" fontSize={"2xl"}>Entre com suas credenciais</Heading>
+            <Heading role="index/heading" fontSize={"2xl"}>
+              Entre com suas credenciais
+            </Heading>
             <FormControl isRequired>
               <FormLabel>E-mail</FormLabel>
               <Input
