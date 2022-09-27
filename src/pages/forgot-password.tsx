@@ -16,6 +16,7 @@ import {
   useToast,
   FormHelperText,
   HStack,
+  Box,
 } from "@chakra-ui/react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { BiArrowBack } from "react-icons/bi";
@@ -166,37 +167,42 @@ const ForgotPassword: NextPage = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.75 } }}
         exit={{ opacity: 0 }}
-        minH="100vh"
         direction={{ base: "column", md: "row" }}
+        minH="100vh"
+        w="80%"
+        m="auto"
         role="forgot-password/stack"
+        justify="center"
       >
-        <Flex p={8} flex={1} align={"center"} justify={"center"}>
+        <Flex align="center">
+          <Image
+            alt="Forgot newPassword Image"
+            h="623px"
+            w="auto"
+            src="/static/images/forgotPassword.png"
+          />
+        </Flex>
+        <Flex align={"center"} justify={"center"} w="580px" h="730px">
           <Stack
+            border="1px solid #DDDDDD"
+            borderRadius="lg"
             as="form"
             onSubmit={handleSubmitForgot(() => {
               isTokenSent ? mutateReset() : mutateRecover();
             })}
-            spacing={8}
             w={"full"}
             maxW={"md"}
+            px="32px"
           >
-            <HStack>
-              <Button
-                onClick={() => router.push("/")}
-                leftIcon={<BiArrowBack />}
-                colorScheme="blue"
-                variant="outline"
-              >
-                Voltar
-              </Button>
-            </HStack>
-            <Heading fontSize={"2xl"}>
-              {isTokenSent ? "Digite sua nova senha" : "Recuperação de senha"}
+            <Heading fontSize="3xl" mt="24">
+              RECUPERAÇÃO DE SENHA
             </Heading>
             {isTokenSent ? (
               <>
-                <FormControl isRequired id="token">
-                  <FormLabel>Token</FormLabel>
+                <FormControl isRequired id="token" mt="12">
+                  <FormLabel color="gray.400" fontSize="sm">
+                    Token
+                  </FormLabel>
                   <Input
                     {...registerReset("token")}
                     focusBorderColor={"blue.500"}
@@ -243,11 +249,13 @@ const ForgotPassword: NextPage = () => {
                 </FormControl>
               </>
             ) : (
-              <FormControl isRequired id="email">
-                <FormLabel>E-mail</FormLabel>
+              <FormControl isRequired id="email" pt="12" pb="12">
+                <FormLabel color="gray.400" fontSize="sm">
+                  E-mail
+                </FormLabel>
                 <Input
                   {...registerForgot("email")}
-                  focusBorderColor={"blue.500"}
+                  focusBorderColor={"green.500"}
                   type="email"
                 />
                 {errorsForgot && errorsForgot.email && (
@@ -263,18 +271,22 @@ const ForgotPassword: NextPage = () => {
               isLoading={
                 statusRecover === "loading" || statusReset === "loading"
               }
-              colorScheme="blue"
+              colorScheme="green"
+              _hover={{ filter: "brightness(0.9)" }}
             >
               {isTokenSent ? "Atualizar senha" : "Enviar código"}
             </Button>
+            <Flex justify="center" pt="10" pb="20">
+              <Button
+                onClick={() => router.push("/")}
+                bg="white"
+                border="1.2px solid #0E918C"
+                color="green.500"
+              >
+                Voltar
+              </Button>
+            </Flex>
           </Stack>
-        </Flex>
-        <Flex flex={1}>
-          <Image
-            alt="Forgot newPassword Image"
-            objectFit="cover"
-            src="/static/images/mind-wp.jpeg"
-          />
         </Flex>
       </Stack>
     </>

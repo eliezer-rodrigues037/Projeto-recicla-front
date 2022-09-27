@@ -15,6 +15,8 @@ import {
   Image,
   InputGroup,
   InputRightElement,
+  Text,
+  Box,
 } from "@chakra-ui/react";
 import { loginSchema } from "../validations/loginSchema";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -45,10 +47,11 @@ const Main: NextPage = () => {
     watch,
     formState: { errors },
   } = useForm<LoginData>({
-    mode: "onTouched",
+    mode: "onChange",
     reValidateMode: "onSubmit",
     resolver: yupResolver(loginSchema),
     defaultValues,
+    delayError: 1000,
   });
 
   const values = watch();
@@ -69,30 +72,49 @@ const Main: NextPage = () => {
         direction={{ base: "column", md: "row" }}
         role="index/stack"
       >
-        <Flex flex={1} alignSelf="center" justifyContent="end" ml="auto">
+        <Flex
+          flex={1}
+          alignSelf="center"
+          justifyContent="end"
+          ml="auto"
+          display={["none", "none", "flex"]}
+        >
           <Image
             alt="Login Image"
             w="622"
-            h="622"
             src="/static/images/tablet-login.png"
           />
         </Flex>
-        <Flex p={8} flex={1} align={"center"} justify={"start"}>
+        <Flex
+          p={8}
+          flex={1}
+          align={"center"}
+          justify={"start"}
+          overflow="hidden"
+        >
           <Stack
             as="form"
             onSubmit={handleSubmit(() => Login(values.email, values.password))}
             spacing={4}
             w={"full"}
             maxW={"md"}
+            border="1px solid #DDDDDD"
+            borderRadius="9px"
+            px="27px"
+            pt="38px"
+            pb="106px"
           >
-            <Heading role="index/heading" fontSize={"2xl"}>
-              Entre com suas credenciais
+            <Text fontSize="1.25rem" fontWeight="700" color="gray.400">
+              BEM-VINDO!
+            </Text>
+            <Heading role="index/heading" fontSize="2.5rem">
+              FAÇA SEU LOGIN
             </Heading>
             <FormControl isRequired>
-              <FormLabel>E-mail</FormLabel>
+              <FormLabel color="gray.400">Email</FormLabel>
               <Input
                 {...register("email")}
-                focusBorderColor={"blue.500"}
+                focusBorderColor={"green.500"}
                 placeholder="e-mail"
                 type="email"
               />
@@ -103,11 +125,11 @@ const Main: NextPage = () => {
               )}
             </FormControl>
             <FormControl isRequired>
-              <FormLabel>Senha</FormLabel>
+              <FormLabel color="gray.400">Senha</FormLabel>
               <InputGroup>
                 <Input
                   {...register("password")}
-                  focusBorderColor={"blue.500"}
+                  focusBorderColor={"green.500"}
                   placeholder="senha"
                   type={isPasswordVisible ? "text" : "password"}
                 />
@@ -141,7 +163,7 @@ const Main: NextPage = () => {
                 justify={"flex-end"}
               >
                 <Link
-                  color={"blue.500"}
+                  fontSize="0.8rem"
                   onClick={() => router.push("/forgot-password")}
                 >
                   Esqueceu sua senha?
@@ -151,12 +173,29 @@ const Main: NextPage = () => {
                 isLoading={isLoading}
                 type="submit"
                 disabled={isLoading}
-                colorScheme="blue"
+                colorScheme="green"
                 variant="solid"
+                h="64px"
+                p="0"
+                _hover={{ filter: "brightness(0.9)" }}
               >
                 Entrar
               </Button>
             </Stack>
+            <Box pt="50px">
+              <Text
+                fontSize="0.8rem"
+                fontWeight="400"
+                textAlign="center"
+                color="gray.400"
+              >
+                AINDA NÃO POSSUI UMA CONTA?
+                <Link fontWeight="bold" color="black">
+                  {" "}
+                  CADASTRE-SE
+                </Link>
+              </Text>
+            </Box>
           </Stack>
         </Flex>
       </Stack>

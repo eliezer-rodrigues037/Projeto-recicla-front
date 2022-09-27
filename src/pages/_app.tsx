@@ -1,5 +1,5 @@
 import type { AppProps } from "next/app";
-import { Box, ChakraProvider } from "@chakra-ui/react";
+import { Box, ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { AuthProvider } from "../contexts/auth";
 import { useAuth } from "../hooks/useAuth";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -38,10 +38,28 @@ const ApiProvider = ({ Component, pageProps }: AppProps) => {
 const queryClient = new QueryClient();
 
 const MyApp = ({ Component, pageProps, router }: AppProps) => {
+  const theme = extendTheme({
+    styles: {
+      global: () => ({
+        body: {
+          fontFamily: "Poppins",
+        },
+      }),
+    },
+    colors: {
+      gray: {
+        200: "#DDDDDD", // Bordas
+        400: "#AAAAAA", // Fonte inputs
+      },
+      green: {
+        500: "#0E918C", // Cor principal da marca
+      },
+    },
+  });
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
-        <ChakraProvider>
+        <ChakraProvider theme={theme}>
           <ApiProvider
             Component={Component}
             pageProps={pageProps}
