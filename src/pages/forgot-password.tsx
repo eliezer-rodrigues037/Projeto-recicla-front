@@ -25,6 +25,7 @@ import resetPasswordSchema from "../validations/resetPasswordSchema";
 import { useMutation } from "react-query";
 import { StdButton } from "../components/StdButton";
 import { WhiteBgButton } from "../components/WhiteBgButton";
+import { AnimatedStack } from "../components/AnimatedStack";
 
 type ForgotPasswordData = {
   email: string;
@@ -164,12 +165,7 @@ const ForgotPassword: NextPage = () => {
         <title>Recuperação de senha</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Stack
-        as={motion.div}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { duration: 0.75 } }}
-        exit={{ opacity: 0 }}
-        direction={{ base: "column", md: "row" }}
+      <AnimatedStack
         minH="100vh"
         minW="80%"
         mx="20"
@@ -321,7 +317,7 @@ const ForgotPassword: NextPage = () => {
             </Flex>
           </Stack>
         </Flex>
-      </Stack>
+      </AnimatedStack>
     </>
   );
 };

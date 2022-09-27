@@ -1,20 +1,10 @@
 import { NextPage } from "next";
-import {
-  Box,
-  Flex,
-  Stack,
-  Text,
-  Image,
-  Heading,
-  VStack,
-  HStack,
-  Button,
-} from "@chakra-ui/react";
-import { motion } from "framer-motion";
+import { Box, Flex, Text, Image, Heading, VStack } from "@chakra-ui/react";
 import Head from "next/head";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { StdButton } from "../../components/StdButton";
 import { WhiteBgButton } from "../../components/WhiteBgButton";
+import { AnimatedStack } from "../../components/AnimatedStack";
 
 const Register: NextPage = () => {
   const router = useRouter();
@@ -23,14 +13,10 @@ const Register: NextPage = () => {
       <Head>
         <title>Cadastro</title>
       </Head>
-      <HStack
-        as={motion.div}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { duration: 0.75 } }}
-        exit={{ opacity: 0 }}
-        direction={{ base: "column", md: "row" }}
+      <AnimatedStack
         role="Register/stack"
         minH="100vh"
+        align="center"
         justify="center"
       >
         <Flex align="center" display={["none", "none", "flex"]}>
@@ -74,6 +60,7 @@ const Register: NextPage = () => {
               fontWeight="medium"
               fontSize="2xl"
               lineHeight="9"
+              onClick={() => router.push("/register/cadastro-individual")}
             >
               PERFIL INDIVUDUAL
             </StdButton>
@@ -83,6 +70,7 @@ const Register: NextPage = () => {
               fontWeight="medium"
               fontSize="2xl"
               lineHeight="9"
+              onClick={() => router.push("/register/cadastro-corporativo")}
             >
               PERFIL CORPORATIVO
             </StdButton>
@@ -100,7 +88,7 @@ const Register: NextPage = () => {
             </WhiteBgButton>
           </Box>
         </VStack>
-      </HStack>
+      </AnimatedStack>
     </>
   );
 };

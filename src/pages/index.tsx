@@ -19,11 +19,11 @@ import {
 } from "@chakra-ui/react";
 import { loginSchema } from "../validations/loginSchema";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { motion } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { StdButton } from "../components/StdButton";
+import { AnimatedStack } from "../components/AnimatedStack";
 
 type LoginData = {
   email: string;
@@ -62,16 +62,7 @@ const Main: NextPage = () => {
         <title>Login</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Stack
-        as={motion.div}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { duration: 0.75 } }}
-        exit={{ opacity: 0 }}
-        spacing="14"
-        minH="100vh"
-        direction={{ base: "column", md: "row" }}
-        role="index/stack"
-      >
+      <AnimatedStack spacing="14" minH="100vh" role="index/stack">
         <Flex
           flex={1}
           alignSelf="center"
@@ -199,7 +190,7 @@ const Main: NextPage = () => {
             </Box>
           </Stack>
         </Flex>
-      </Stack>
+      </AnimatedStack>
     </>
   );
 };
