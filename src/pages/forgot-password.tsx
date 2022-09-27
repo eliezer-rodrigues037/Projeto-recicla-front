@@ -19,7 +19,6 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { BiArrowBack } from "react-icons/bi";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -35,6 +34,7 @@ type ForgotPasswordData = {
 type ResetPasswordData = {
   token: string;
   newPassword: string;
+  passwordConfirmation: string;
 };
 
 const ForgotPassword: NextPage = () => {
@@ -43,6 +43,8 @@ const ForgotPassword: NextPage = () => {
 
   const [isTokenSent, setIsTokenSent] = useState<boolean>(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const [isComfirmPasswordVisible, setIsComfirmPasswordVisible] =
+    useState<boolean>(false);
 
   const defaultValuesForgot: ForgotPasswordData = {
     email: "",
@@ -51,6 +53,7 @@ const ForgotPassword: NextPage = () => {
   const defaultValuesReset: ResetPasswordData = {
     token: "",
     newPassword: "",
+    passwordConfirmation: "",
   };
 
   const {
@@ -169,22 +172,23 @@ const ForgotPassword: NextPage = () => {
         exit={{ opacity: 0 }}
         direction={{ base: "column", md: "row" }}
         minH="100vh"
-        w="80%"
-        m="auto"
+        minW="80%"
+        mx="20"
         role="forgot-password/stack"
         justify="center"
       >
-        <Flex align="center">
+        <Flex align="center" display={["none", "none", "flex"]}>
           <Image
             alt="Forgot newPassword Image"
-            h="623px"
-            w="auto"
+            w="xl"
+            h="auto"
             src="/static/images/forgotPassword.png"
           />
         </Flex>
-        <Flex align={"center"} justify={"center"} w="580px" h="730px">
+        <Flex align={"center"} justify={"center"}>
           <Stack
-            border="1px solid #DDDDDD"
+            border="1px solid"
+            borderColor="gray.200"
             borderRadius="lg"
             as="form"
             onSubmit={handleSubmitForgot(() => {
@@ -194,18 +198,18 @@ const ForgotPassword: NextPage = () => {
             maxW={"md"}
             px="32px"
           >
-            <Heading fontSize="3xl" mt="24">
+            <Heading fontSize="3xl" mt="16" mb="10">
               RECUPERAÇÃO DE SENHA
             </Heading>
             {isTokenSent ? (
               <>
-                <FormControl isRequired id="token" mt="12">
+                <FormControl isRequired id="token">
                   <FormLabel color="gray.400" fontSize="sm">
-                    Token
+                    CÓDIGO
                   </FormLabel>
                   <Input
                     {...registerReset("token")}
-                    focusBorderColor={"blue.500"}
+                    focusBorderColor={"green.500"}
                     type="text"
                     maxLength={8}
                   />
@@ -217,11 +221,13 @@ const ForgotPassword: NextPage = () => {
                 </FormControl>
 
                 <FormControl isRequired id="newPassword">
-                  <FormLabel>Nova senha</FormLabel>
+                  <FormLabel color="gray.400" fontSize="sm">
+                    SENHA
+                  </FormLabel>
                   <InputGroup>
                     <Input
                       {...registerReset("newPassword")}
-                      focusBorderColor={"blue.500"}
+                      focusBorderColor={"green.500"}
                       type={isPasswordVisible ? "text" : "password"}
                     />
                     <InputRightElement width={"3.5rem"}>
@@ -247,6 +253,39 @@ const ForgotPassword: NextPage = () => {
                     </FormHelperText>
                   )}
                 </FormControl>
+                <FormControl isRequired id="passwordConfirmation">
+                  <FormLabel color="gray.400" fontSize="sm">
+                    REPETIR SENHA
+                  </FormLabel>
+                  <InputGroup>
+                    <Input
+                      {...registerReset("passwordConfirmation")}
+                      focusBorderColor={"green.500"}
+                      type={isComfirmPasswordVisible ? "text" : "password"}
+                    ></Input>
+                    <InputRightElement width={"3.5rem"}>
+                      {isComfirmPasswordVisible ? (
+                        <AiOutlineEye
+                          size={24}
+                          cursor="pointer"
+                          onClick={() => setIsComfirmPasswordVisible(false)}
+                        />
+                      ) : (
+                        <AiOutlineEyeInvisible
+                          size={24}
+                          cursor="pointer"
+                          onClick={() => setIsComfirmPasswordVisible(true)}
+                        />
+                      )}
+                    </InputRightElement>
+                  </InputGroup>
+                  {errorsReset && errorsReset.passwordConfirmation && (
+                    <FormHelperText>
+                      {errorsReset.passwordConfirmation.message &&
+                        errorsReset.passwordConfirmation.message}
+                    </FormHelperText>
+                  )}
+                </FormControl>
               </>
             ) : (
               <FormControl isRequired id="email" pt="12" pb="12">
@@ -265,22 +304,26 @@ const ForgotPassword: NextPage = () => {
                 )}
               </FormControl>
             )}
-
-            <Button
-              type="submit"
-              isLoading={
-                statusRecover === "loading" || statusReset === "loading"
-              }
-              colorScheme="green"
-              _hover={{ filter: "brightness(0.9)" }}
-            >
-              {isTokenSent ? "Atualizar senha" : "Enviar código"}
-            </Button>
-            <Flex justify="center" pt="10" pb="20">
+            <Flex>
+              <Button
+                flex={1}
+                mt="10"
+                type="submit"
+                isLoading={
+                  statusRecover === "loading" || statusReset === "loading"
+                }
+                colorScheme="green"
+                _hover={{ filter: "brightness(0.9)" }}
+              >
+                {isTokenSent ? "ALTERAR SENHA" : "ENVIAR CÓDIGO"}
+              </Button>
+            </Flex>
+            <Flex justify="center" pt="10" pb="14">
               <Button
                 onClick={() => router.push("/")}
                 bg="white"
-                border="1.2px solid #0E918C"
+                border="1.2px solid"
+                borderColor="green.500"
                 color="green.500"
               >
                 Voltar

@@ -3,9 +3,9 @@ import * as yup from "yup";
 const resetPasswordSchema = yup.object().shape({
   token: yup
     .string()
-    .required("Token é um campo obrigatório.")
-    .min(8, "Token deve ter no mínimo 8 caracteres.")
-    .max(8, "Token deve ter no máximo 8 caracteres."),
+    .required("Codigo é um campo obrigatório.")
+    .min(8, "Codigo deve ter no mínimo 8 caracteres.")
+    .max(8, "Codigo deve ter no máximo 8 caracteres."),
   newPassword: yup
     .string()
     .required("Senha é um campo obrigatório.")
@@ -24,6 +24,9 @@ const resetPasswordSchema = yup.object().shape({
         return true;
       }
     ),
+  passwordConfirmation: yup
+    .string()
+    .oneOf([yup.ref("newPassword"), null], "Senhas devem coincidir"),
 });
 
 export default resetPasswordSchema;

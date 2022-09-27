@@ -67,7 +67,7 @@ const Main: NextPage = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.75 } }}
         exit={{ opacity: 0 }}
-        spacing="57px"
+        spacing="14"
         minH="100vh"
         direction={{ base: "column", md: "row" }}
         role="index/stack"
@@ -81,7 +81,7 @@ const Main: NextPage = () => {
         >
           <Image
             alt="Login Image"
-            w="622"
+            w="xl"
             src="/static/images/tablet-login.png"
           />
         </Flex>
@@ -98,11 +98,12 @@ const Main: NextPage = () => {
             spacing={4}
             w={"full"}
             maxW={"md"}
-            border="1px solid #DDDDDD"
-            borderRadius="9px"
-            px="27px"
-            pt="38px"
-            pb="106px"
+            border="1px solid"
+            borderColor="gray.200"
+            borderRadius="lg"
+            px="6"
+            pt="9"
+            pb="24"
           >
             <Text fontSize="1.25rem" fontWeight="700" color="gray.400">
               BEM-VINDO!
@@ -175,14 +176,13 @@ const Main: NextPage = () => {
                 disabled={isLoading}
                 colorScheme="green"
                 variant="solid"
-                h="64px"
-                p="0"
+                h="14"
                 _hover={{ filter: "brightness(0.9)" }}
               >
                 Entrar
               </Button>
             </Stack>
-            <Box pt="50px">
+            <Box pt="12">
               <Text
                 fontSize="0.8rem"
                 fontWeight="400"

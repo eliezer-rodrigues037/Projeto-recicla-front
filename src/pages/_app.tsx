@@ -44,6 +44,9 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
         body: {
           fontFamily: "Poppins",
         },
+        html: {
+          fontSize: "90%",
+        },
       }),
     },
     colors: {
@@ -52,7 +55,7 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
         400: "#AAAAAA", // Fonte inputs
       },
       green: {
-        500: "#0E918C", // Cor principal da marca
+        500: "#0CD614", // Cor principal da marca
       },
     },
   });
