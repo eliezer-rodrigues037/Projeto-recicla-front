@@ -3,7 +3,6 @@ import Head from "next/head";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import {
-  Button,
   Flex,
   FormControl,
   FormHelperText,
@@ -24,6 +23,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { StdButton } from "../components/StdButton";
 
 type LoginData = {
   email: string;
@@ -81,7 +81,7 @@ const Main: NextPage = () => {
         >
           <Image
             alt="Login Image"
-            w="xl"
+            boxSize="xl"
             src="/static/images/tablet-login.png"
           />
         </Flex>
@@ -170,17 +170,14 @@ const Main: NextPage = () => {
                   Esqueceu sua senha?
                 </Link>
               </Stack>
-              <Button
+              <StdButton
                 isLoading={isLoading}
-                type="submit"
                 disabled={isLoading}
-                colorScheme="green"
-                variant="solid"
+                type="submit"
                 h="14"
-                _hover={{ filter: "brightness(0.9)" }}
               >
                 Entrar
-              </Button>
+              </StdButton>
             </Stack>
             <Box pt="12">
               <Text
@@ -190,7 +187,11 @@ const Main: NextPage = () => {
                 color="gray.400"
               >
                 AINDA NÃO POSSUI UMA CONTA?
-                <Link fontWeight="bold" color="black">
+                <Link
+                  fontWeight="bold"
+                  color="black"
+                  onClick={() => router.push("/register")}
+                >
                   {" "}
                   CADASTRE-SE
                 </Link>

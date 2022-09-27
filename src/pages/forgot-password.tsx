@@ -3,7 +3,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import type { NextPage } from "next";
 import {
-  Button,
   Flex,
   FormControl,
   FormLabel,
@@ -15,8 +14,6 @@ import {
   Image,
   useToast,
   FormHelperText,
-  HStack,
-  Box,
 } from "@chakra-ui/react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { motion } from "framer-motion";
@@ -26,6 +23,8 @@ import api from "../services/api";
 import forgotSchema from "../validations/forgotSchema";
 import resetPasswordSchema from "../validations/resetPasswordSchema";
 import { useMutation } from "react-query";
+import { StdButton } from "../components/StdButton";
+import { WhiteBgButton } from "../components/WhiteBgButton";
 
 type ForgotPasswordData = {
   email: string;
@@ -180,8 +179,7 @@ const ForgotPassword: NextPage = () => {
         <Flex align="center" display={["none", "none", "flex"]}>
           <Image
             alt="Forgot newPassword Image"
-            w="xl"
-            h="auto"
+            boxSize="xl"
             src="/static/images/forgotPassword.png"
           />
         </Flex>
@@ -196,7 +194,7 @@ const ForgotPassword: NextPage = () => {
             })}
             w={"full"}
             maxW={"md"}
-            px="32px"
+            px="6"
           >
             <Heading fontSize="3xl" mt="16" mb="10">
               RECUPERAÇÃO DE SENHA
@@ -305,29 +303,21 @@ const ForgotPassword: NextPage = () => {
               </FormControl>
             )}
             <Flex>
-              <Button
+              <StdButton
                 flex={1}
                 mt="10"
                 type="submit"
                 isLoading={
                   statusRecover === "loading" || statusReset === "loading"
                 }
-                colorScheme="green"
-                _hover={{ filter: "brightness(0.9)" }}
               >
                 {isTokenSent ? "ALTERAR SENHA" : "ENVIAR CÓDIGO"}
-              </Button>
+              </StdButton>
             </Flex>
             <Flex justify="center" pt="10" pb="14">
-              <Button
-                onClick={() => router.push("/")}
-                bg="white"
-                border="1.2px solid"
-                borderColor="green.500"
-                color="green.500"
-              >
-                Voltar
-              </Button>
+              <WhiteBgButton onClick={() => router.push("/")}>
+                VOLTAR
+              </WhiteBgButton>
             </Flex>
           </Stack>
         </Flex>
