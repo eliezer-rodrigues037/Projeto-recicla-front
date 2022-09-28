@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import Lottie from "lottie-react";
 import animation from "../assets/lotties/rocket.json";
+import { FormLabel } from "../components/styled/FormLabel";
 
 const ApiProvider = ({ Component, pageProps }: AppProps) => {
   const { isLoading } = useAuth();
@@ -57,6 +58,9 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
       green: {
         500: "#0CD614", // Cor principal da marca
       },
+    },
+    components: {
+      FormLabel,
     },
   });
   return (
