@@ -37,7 +37,7 @@ const Main: NextPage = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
 
   const defaultValues: LoginData = {
-    email: "",
+    email: "",      
     password: "",
   };
 
@@ -103,7 +103,7 @@ const Main: NextPage = () => {
               FAÇA SEU LOGIN
             </Heading>
             <FormControl isRequired>
-              <FormLabel color="gray.400">Email</FormLabel>
+              <FormLabel>Email</FormLabel>
               <Input
                 {...register("email")}
                 focusBorderColor={"green.500"}
@@ -117,7 +117,7 @@ const Main: NextPage = () => {
               )}
             </FormControl>
             <FormControl isRequired>
-              <FormLabel color="gray.400">Senha</FormLabel>
+              <FormLabel>Senha</FormLabel>
               <InputGroup>
                 <Input
                   {...register("password")}
@@ -177,13 +177,12 @@ const Main: NextPage = () => {
                 textAlign="center"
                 color="gray.400"
               >
-                AINDA NÃO POSSUI UMA CONTA?
+                AINDA NÃO POSSUI UMA CONTA?{" "}
                 <Link
                   fontWeight="bold"
                   color="black"
                   onClick={() => router.push("/register")}
                 >
-                  {" "}
                   CADASTRE-SE
                 </Link>
               </Text>

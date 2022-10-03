@@ -197,9 +197,7 @@ const ForgotPassword: NextPage = () => {
             {isTokenSent ? (
               <>
                 <FormControl isRequired id="token">
-                  <FormLabel color="gray.400" fontSize="sm">
-                    CÓDIGO
-                  </FormLabel>
+                  <FormLabel>CÓDIGO</FormLabel>
                   <Input
                     {...registerReset("token")}
                     focusBorderColor={"green.500"}
@@ -282,9 +280,7 @@ const ForgotPassword: NextPage = () => {
               </>
             ) : (
               <FormControl isRequired id="email" pt="12" pb="12">
-                <FormLabel color="gray.400" fontSize="sm">
-                  E-mail
-                </FormLabel>
+                <FormLabel>E-mail</FormLabel>
                 <Input
                   {...registerForgot("email")}
                   focusBorderColor={"green.500"}

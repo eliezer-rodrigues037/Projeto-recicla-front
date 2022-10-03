@@ -13,17 +13,25 @@ import {
   InputGroup,
   useRadioGroup,
   Box,
+  Stack,
+  useToast,
 } from "@chakra-ui/react";
 import { NextPage } from "next";
+import { useRouter } from "next/router";
 import Head from "next/head";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { AnimatedStack } from "../../components/AnimatedStack";
 import { StdButton } from "../../components/StdButton";
 import { WhiteBgButton } from "../../components/WhiteBgButton";
-import { useRouter } from "next/router";
 import { EntityTypes } from "../../components/EntityTypes";
+import { useMutation } from "react-query";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { registerUserSchema } from "../../validations/registerUserSchema";
+import InputMask from "react-input-mask";
+import api from "../../services/api";
+import { registerBancSchema } from "../../validations/registerBancSchema";
 
 type RegisterUserData = {
   name: string;
@@ -32,18 +40,18 @@ type RegisterUserData = {
   cel: string;
   birthDate: string;
   password: string;
-  comfirmPassword: string;
-  entity: "fisica" | "juridica";
+  comfirmPassword?: string;
 };
 
 type RegisterBancData = {
   accountOwner: string;
   cpf: string;
-  banc?: number;
-  agency?: number;
-  agencyDg?: number;
-  accountNumber?: number;
-  accountDg?: number;
+  banc?: string;
+  agencyNumber?: string;
+  agencyDg?: string;
+  accountNumber?: string;
+  accountDg?: string;
+  entity: "fisica" | "juridica";
 };
 
 const CadastroIndividual: NextPage = () => {
@@ -52,8 +60,9 @@ const CadastroIndividual: NextPage = () => {
   const [isComfirmPasswordVisible, setIsComfirmPasswordVisible] =
     useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const router = useRouter();
+
+  const required = true;
 
   const defaultUserData: RegisterUserData = {
     name: "",
@@ -63,13 +72,19 @@ const CadastroIndividual: NextPage = () => {
     birthDate: "",
     password: "",
     comfirmPassword: "",
-    entity: "fisica",
   };
 
   const defaultBancData: RegisterBancData = {
     accountOwner: "",
     cpf: "",
+    entity: "fisica",
   };
+
+  const [selectedEntity, setSelectedEntity] = useState<"fisica" | "juridica">(
+    defaultBancData.entity
+  );
+
+  /** ------------------- useForm Hook -------------------*/
 
   const {
     handleSubmit: handleSubmitUser,
@@ -78,50 +93,95 @@ const CadastroIndividual: NextPage = () => {
     watch: watchUser,
     formState: { errors: errorsUser },
   } = useForm<RegisterUserData>({
-    mode: "onSubmit",
+    mode: "onTouched",
     reValidateMode: "onSubmit",
+    // resolver: yupResolver(registerUserSchema),
     defaultValues: defaultUserData,
   });
 
   const {
-    handleSubmit: handleSubmitBanc,
     register: registerBanc,
     resetField: resetFiledBanc,
     watch: watchBanc,
     formState: { errors: errorsBanc },
   } = useForm<RegisterBancData>({
-    mode: "onSubmit",
+    mode: "onTouched",
     reValidateMode: "onSubmit",
+    resolver: yupResolver(registerBancSchema),
     defaultValues: defaultBancData,
   });
 
   const userData = watchUser();
   const bancData = watchBanc();
 
-  const handleSubmit = () => {
-    if (step == 1) {
-      setStep(2);
-    } else {
+  const handleSubmit = async () => {
+    if (step == 2) {
       setIsLoading(true);
+      bancData.entity = selectedEntity;
+      console.log(bancData);
+      console.log(userData);
+
+      delete userData["comfirmPassword"];
+
+      const response = await api.post("auth/register", {
+        userData,
+        bancData,
+      });
+
+      return response;
     }
-    console.log(userData);
   };
+
+  /** ------------------- Custom Radio Input ------------------- */
 
   const options: string[] = ["PESSOA FÍSICA", "PESSOA JURÍDICA"];
 
-  const hadleUserEntityData = (value: string) => {
+  const hadleEntitySlection = (value: string) => {
     value == options[0]
-      ? (userData.entity = "fisica")
-      : (userData.entity = "juridica");
+      ? setSelectedEntity("fisica")
+      : setSelectedEntity("juridica");
   };
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "entity",
-    defaultValue: defaultUserData.entity == "fisica" ? options[0] : options[1],
-    onChange: hadleUserEntityData,
+    defaultValue: defaultBancData.entity == "fisica" ? options[0] : options[1],
+    onChange: hadleEntitySlection,
   });
 
   const group = getRootProps();
+
+  /** ------------------- useMutation Hook -------------------*/
+
+  const toast = useToast();
+
+  const { status: statusRegister, mutate: mutateRegister } = useMutation(
+    handleSubmit,
+    {
+      onSuccess: () => {
+        setIsLoading(false);
+        toast({
+          title: "Sucesso.",
+          description: "Cadastrado com sucesso!",
+          status: "success",
+          duration: 2500,
+          isClosable: true,
+          position: "top",
+        });
+        router.push("/");
+      },
+      onError: (e: any) => {
+        setIsLoading(false);
+        toast({
+          title: "Erro.",
+          description: e.response.data.message,
+          status: "error",
+          duration: 2500,
+          isClosable: true,
+          position: "top",
+        });
+      },
+    }
+  );
 
   return (
     <>
@@ -147,13 +207,15 @@ const CadastroIndividual: NextPage = () => {
           border="1px solid"
           borderColor="gray.200"
           borderRadius="xl"
-          maxW="lg"
+          w="lg"
+          minW="lg"
           px="6"
           pt="14"
           h="fit-content"
-          minH="xl"
           as="form"
-          onSubmit={handleSubmitUser(handleSubmit)}
+          onSubmit={handleSubmitUser(() => {
+            step == 1 ? setStep(2) : mutateRegister();
+          })}
         >
           <Text
             color="gray.400"
@@ -176,9 +238,10 @@ const CadastroIndividual: NextPage = () => {
           {step == 1 ? (
             <VStack align="space-between" spacing="2">
               <HStack spacing="5">
-                <FormControl isRequired id="name">
+                <FormControl isRequired={required} id="name">
                   <FormLabel>NOME</FormLabel>
                   <Input
+                    isInvalid={errorsUser && errorsUser.name ? true : false}
                     {...registerUser("name")}
                     focusBorderColor="green.500"
                     type="text"
@@ -187,9 +250,12 @@ const CadastroIndividual: NextPage = () => {
                     <FormHelperText>{errorsUser.name.message}</FormHelperText>
                   )}
                 </FormControl>
-                <FormControl isRequired id="cpf">
+                <FormControl isRequired={required} id="cpf">
                   <FormLabel>CPF</FormLabel>
                   <Input
+                    as={InputMask}
+                    mask="999.999.999-99"
+                    isInvalid={errorsUser && errorsUser.cpf ? true : false}
                     {...registerUser("cpf")}
                     focusBorderColor="green.500"
                     type="text"
@@ -199,9 +265,10 @@ const CadastroIndividual: NextPage = () => {
                   )}
                 </FormControl>
               </HStack>
-              <FormControl isRequired id="email">
+              <FormControl isRequired={required} id="email">
                 <FormLabel>E-MAIL</FormLabel>
                 <Input
+                  isInvalid={errorsUser && errorsUser.email ? true : false}
                   {...registerUser("email")}
                   focusBorderColor="green.500"
                   type="email"
@@ -211,20 +278,26 @@ const CadastroIndividual: NextPage = () => {
                 )}
               </FormControl>
               <HStack spacing="5">
-                <FormControl isRequired id="cel">
+                <FormControl isRequired={required} id="cel">
                   <FormLabel>CELULAR</FormLabel>
                   <Input
+                    isInvalid={errorsUser && errorsUser.cel ? true : false}
+                    as={InputMask}
+                    mask="(99) 99999-9999"
                     {...registerUser("cel")}
                     focusBorderColor="green.500"
-                    type="text"
+                    type="phone"
                   />
                   {errorsUser && errorsUser.cel && (
                     <FormHelperText>{errorsUser.cel.message}</FormHelperText>
                   )}
                 </FormControl>
-                <FormControl isRequired id="birthDate">
+                <FormControl isRequired={required} id="birthDate">
                   <FormLabel>DATA DE NASCIMENTO</FormLabel>
                   <Input
+                    isInvalid={
+                      errorsUser && errorsUser.birthDate ? true : false
+                    }
                     {...registerUser("birthDate")}
                     focusBorderColor="green.500"
                     type="date"
@@ -237,10 +310,13 @@ const CadastroIndividual: NextPage = () => {
                 </FormControl>
               </HStack>
               <HStack spacing="5">
-                <FormControl isRequired id="password">
+                <FormControl isRequired={required} id="password">
                   <FormLabel>SENHA</FormLabel>
                   <InputGroup>
                     <Input
+                      isInvalid={
+                        errorsUser && errorsUser.password ? true : false
+                      }
                       {...registerUser("password")}
                       focusBorderColor="green.500"
                       type={isPasswordVisible ? "text" : "password"}
@@ -267,10 +343,13 @@ const CadastroIndividual: NextPage = () => {
                     </FormHelperText>
                   )}
                 </FormControl>
-                <FormControl isRequired id="comfirmPassword">
+                <FormControl isRequired={required} id="comfirmPassword">
                   <FormLabel>REPETIR SENHA</FormLabel>
                   <InputGroup>
                     <Input
+                      isInvalid={
+                        errorsUser && errorsUser.comfirmPassword ? true : false
+                      }
                       {...registerUser("comfirmPassword")}
                       focusBorderColor="green.500"
                       type={isComfirmPasswordVisible ? "text" : "password"}
@@ -301,19 +380,24 @@ const CadastroIndividual: NextPage = () => {
             </VStack>
           ) : (
             <>
-              <HStack {...group}>
+              <Flex {...group} w="100%" justify="space-between">
                 {options.map((value) => {
-                  const radio = getRadioProps({ value });
+                  const radio = getRadioProps({
+                    value,
+                  });
                   return (
                     <EntityTypes key={value} {...radio}>
                       {value}
                     </EntityTypes>
                   );
                 })}
-              </HStack>
-              <FormControl isRequired id="accountOwner">
+              </Flex>
+              <FormControl isRequired={required} id="accountOwner">
                 <FormLabel>TITULAR DA CONTA</FormLabel>
                 <Input
+                  isInvalid={
+                    errorsBanc && errorsBanc.accountOwner ? true : false
+                  }
                   {...registerBanc("accountOwner")}
                   focusBorderColor="green.500"
                   type="text"
@@ -324,10 +408,13 @@ const CadastroIndividual: NextPage = () => {
                   </FormHelperText>
                 )}
               </FormControl>
-              <HStack>
-                <FormControl isRequired id="cpf">
+              <HStack spacing="5">
+                <FormControl isRequired={required} id="cpf">
                   <FormLabel>CPF</FormLabel>
                   <Input
+                    as={InputMask}
+                    mask="999.999.999-99"
+                    isInvalid={errorsBanc && errorsBanc.cpf ? true : false}
                     {...registerBanc("cpf")}
                     focusBorderColor="green.500"
                     type="text"
@@ -336,24 +423,105 @@ const CadastroIndividual: NextPage = () => {
                     <FormHelperText>{errorsBanc.cpf.message}</FormHelperText>
                   )}
                 </FormControl>
-                <FormControl isRequired id="banc">
+                <FormControl isRequired={required} id="banc">
                   <FormLabel>BANCO</FormLabel>
                   <Input
+                    as={InputMask}
+                    mask="9999"
+                    isInvalid={errorsBanc && errorsBanc.banc ? true : false}
                     {...registerBanc("banc")}
                     focusBorderColor="green.500"
-                    type="number"
+                    type="text"
                   />
                   {errorsBanc && errorsBanc.banc && (
                     <FormHelperText>{errorsBanc.banc.message}</FormHelperText>
                   )}
                 </FormControl>
               </HStack>
+              <HStack spacing="5">
+                <Stack direction="row" flex="1">
+                  <FormControl isRequired={required} id="agency" w="100%">
+                    <FormLabel>AGÊNCIA</FormLabel>
+                    <Input
+                      as={InputMask}
+                      mask="9999"
+                      isInvalid={
+                        errorsBanc && errorsBanc.agencyNumber ? true : false
+                      }
+                      {...registerBanc("agencyNumber")}
+                      focusBorderColor="green.500"
+                      type="text"
+                    />
+                    {errorsBanc && errorsBanc.agencyNumber && (
+                      <FormHelperText>
+                        {errorsBanc.agencyNumber.message}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                  <FormControl isRequired={required} id="agencyDG" w="6rem">
+                    <FormLabel>DV</FormLabel>
+                    <Input
+                      as={InputMask}
+                      mask="999"
+                      isInvalid={
+                        errorsBanc && errorsBanc.agencyDg ? true : false
+                      }
+                      {...registerBanc("agencyDg")}
+                      focusBorderColor="green.500"
+                      type="text"
+                    />
+                    {errorsBanc && errorsBanc.agencyDg && (
+                      <FormHelperText>
+                        {errorsBanc.agencyDg.message}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Stack>
+                <Stack direction="row" flex="1">
+                  <FormControl isRequired={required} id="accountNumber">
+                    <FormLabel>CONTA</FormLabel>
+                    <Input
+                      as={InputMask}
+                      mask="99999999"
+                      isInvalid={
+                        errorsBanc && errorsBanc.accountNumber ? true : false
+                      }
+                      {...registerBanc("accountNumber")}
+                      focusBorderColor="green.500"
+                      type="text"
+                    />
+                    {errorsBanc && errorsBanc.accountNumber && (
+                      <FormHelperText>
+                        {errorsBanc.accountNumber.message}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                  <FormControl isRequired={required} id="accountDg" w="6rem">
+                    <FormLabel>DV</FormLabel>
+                    <Input
+                      as={InputMask}
+                      mask="999"
+                      isInvalid={
+                        errorsBanc && errorsBanc.accountDg ? true : false
+                      }
+                      {...registerBanc("accountDg")}
+                      focusBorderColor="green.500"
+                      type="text"
+                    />
+                    {errorsBanc && errorsBanc.accountDg && (
+                      <FormHelperText>
+                        {errorsBanc.accountDg.message}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Stack>
+              </HStack>
             </>
           )}
           <Box width="100%" pt="8">
             <StdButton
-              isLoading={isLoading}
-              disabled={isLoading}
+              isLoading={statusRegister === "loading" || isLoading}
+              disabled={statusRegister === "loading" || isLoading}
               type="submit"
               width="100%"
             >

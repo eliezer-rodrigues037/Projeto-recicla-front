@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import Lottie from "lottie-react";
 import animation from "../assets/lotties/rocket.json";
 import { FormLabel } from "../components/styled/FormLabel";
+import { Input } from "../components/styled/Input";
 
 const ApiProvider = ({ Component, pageProps }: AppProps) => {
   const { isLoading } = useAuth();
@@ -61,6 +62,7 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
     },
     components: {
       FormLabel,
+      Input,
     },
   });
   return (
