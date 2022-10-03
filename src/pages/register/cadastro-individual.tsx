@@ -95,7 +95,7 @@ const CadastroIndividual: NextPage = () => {
   } = useForm<RegisterUserData>({
     mode: "onTouched",
     reValidateMode: "onSubmit",
-    // resolver: yupResolver(registerUserSchema),
+    resolver: yupResolver(registerUserSchema),
     defaultValues: defaultUserData,
   });
 
