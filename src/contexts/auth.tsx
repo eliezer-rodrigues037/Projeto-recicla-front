@@ -105,7 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           position: "top",
         });
 
-        router.push("/users");
+        router.push("/users/individual");
       }
     } catch (e: any) {
       console.log(e);

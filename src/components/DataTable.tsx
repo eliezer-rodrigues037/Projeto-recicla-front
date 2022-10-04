@@ -4,6 +4,8 @@ import {
   AiOutlineEdit,
   AiOutlineSearch,
 } from "react-icons/ai";
+
+import { FiSettings } from "react-icons/fi";
 import { MdClear } from "react-icons/md";
 import {
   HiOutlineChevronDoubleLeft,
@@ -34,8 +36,12 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
+  VStack,
+  Flex,
+  HStack,
 } from "@chakra-ui/react";
 import { useAuth } from "../hooks/useAuth";
+import { StdButton } from "./StdButton";
 
 type DataTableProps = {
   data: User[];
@@ -96,23 +102,24 @@ export const DataTable = ({
       ) : (
         false
       )}
-      <Box border="1px solid #2d3748" borderRadius={8}>
+      <Box borderRadius="3xl" bg="white" mx="10" my="5">
         <Box
-          mb={6}
-          p={4}
+          mb={1}
+          p={3}
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          <InputGroup w={{ base: "60%", md: "35%" }}>
+          <InputGroup w={{ base: "60%", md: "35%" }} m="1">
             <InputLeftElement
               pointerEvents="none"
               // eslint-disable-next-line react/no-children-prop
               children={<AiOutlineSearch />}
             />
             <Input
+              borderRadius="3xl"
               placeholder="Pesquisar"
               value={q}
               onChange={(e) => {
@@ -134,61 +141,75 @@ export const DataTable = ({
               false
             )}
           </InputGroup>
-          {user?.role === "User" ? (
-            false
-          ) : (
-            <Button variant={"outline"} onClick={onOpen}>
-              Adicionar
-            </Button>
-          )}
         </Box>
         <TableContainer>
           <Table variant="simple">
             <Thead>
               <Tr>
-                <Th>Avatar</Th>
+                <Th>Cadastro em</Th>
                 <Th>Nome</Th>
                 <Th>E-mail</Th>
-                {user?.role === "User" ? false : <Th>Ações</Th>}
+                <Th>Telefone</Th>
+                <Th>Ações</Th>
               </Tr>
             </Thead>
-            <Tbody>
+            <Tbody fontSize="0.95rem" color="gray.400">
               {data?.map((item, index) => {
                 return (
                   <Tr key={index}>
                     <Td>
-                      <Avatar name={item?.name} src={item?.avatar} />
+                      {new Date(item?.created_at).toLocaleDateString("pt-BR")}
                     </Td>
                     <Td>{item?.name}</Td>
                     <Td>{item?.email}</Td>
-                    {user?.role === "User" ? (
-                      false
-                    ) : (
+                    <Td>{item?.cel}</Td>
+                    {user?.role === "Admin" ? (
                       <Td>
-                        <Tooltip label="Editar usuário">
-                          <IconButton
-                            onClick={() => {
-                              setChosenUser(item);
-                              OnOpenEditModal();
-                            }}
-                            icon={<AiOutlineEdit />}
-                            colorScheme="yellow"
-                            aria-label="Edit"
-                            mr={2}
-                          />
-                        </Tooltip>
-                        <Tooltip label="Remover usuário">
-                          <IconButton
-                            onClick={() => {
-                              setChosenUser(item);
-                              OnOpenDeleteModal();
-                            }}
-                            icon={<AiOutlineDelete />}
-                            colorScheme="red"
-                            aria-label="Delete"
-                          />
-                        </Tooltip>
+                        <HStack>
+                          <Flex flexDir="column">
+                            <StdButton
+                              onClick={() => {
+                                setChosenUser(item);
+                                OnOpenEditModal();
+                              }}
+                              colorScheme="green.500"
+                              variant="solid"
+                              color="green.500"
+                              aria-label="Delete"
+                              bg="gray.500"
+                              borderRadius="0"
+                              fontSize="1rem"
+                              w="100%"
+                              h="fit-content"
+                            >
+                              Editar
+                            </StdButton>
+
+                            <StdButton
+                              onClick={() => {
+                                setChosenUser(item);
+                                OnOpenDeleteModal();
+                              }}
+                              colorScheme="green.500"
+                              variant="solid"
+                              color="green.500"
+                              aria-label="Delete"
+                              bg="gray.500"
+                              borderRadius="0"
+                              fontSize="1rem"
+                              w="100%"
+                              h="fit-content"
+                            >
+                              Deletar
+                            </StdButton>
+                          </Flex>
+                          <span>
+                            <FiSettings />
+                          </span>
+                        </HStack>
                       </Td>
+                    ) : (
+                      false
                     )}
                   </Tr>
                 );

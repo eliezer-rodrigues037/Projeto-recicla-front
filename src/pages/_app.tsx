@@ -52,9 +52,13 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
       }),
     },
     colors: {
+      black: {
+        900: "#000F0E",
+      },
       gray: {
         200: "#DDDDDD", // Bordas
         400: "#AAAAAA", // Fonte inputs
+        500: "#f5f5f582",
       },
       green: {
         500: "#0CD614", // Cor principal da marca

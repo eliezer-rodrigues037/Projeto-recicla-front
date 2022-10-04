@@ -1,20 +1,23 @@
 import React, { useState } from "react";
 import Head from "next/head";
 import { NextPage } from "next";
-import { SidebarWithHeader } from "../components/SidebarWithHeader";
-import { Stack, Text, useDisclosure } from "@chakra-ui/react";
-import { UserRows } from "../types/UserRows";
-import api from "../services/api";
-import { AddUserModal } from "../components/AddUserModal";
+import { SidebarWithHeader } from "../../components/SidebarWithHeader";
+import { Button, Stack, Text, useDisclosure } from "@chakra-ui/react";
+import { UserRows } from "../../types/UserRows";
+import api from "../../services/api";
+import { AddUserModal } from "../../components/AddUserModal";
 import { useQuery } from "react-query";
-import { DataTable } from "../components/DataTable";
-import { UsersMain } from "../components/UsersMain";
+import { DataTable } from "../../components/DataTable";
+import { UsersMain } from "../../components/UsersMain";
+import { useAuth } from "../../hooks/useAuth";
+import { StdButton } from "../../components/StdButton";
 
 type IHandleGetAllUsersProps = {
   queryKey: Array<any>;
 };
 
 const Users: NextPage = () => {
+  const { user } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [page, setPage] = useState<number>(0);
@@ -44,7 +47,7 @@ const Users: NextPage = () => {
       <UsersMain status={status}>
         {isOpen ? <AddUserModal isOpen={isOpen} onClose={onClose} /> : false}
         <Head>
-          <title>Usuários</title>
+          <title>Usuários | Individual</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <SidebarWithHeader>
@@ -52,11 +55,26 @@ const Users: NextPage = () => {
             alignItems={"center"}
             justifyContent={"space-between"}
             flexDirection={"row"}
+            mx="10"
             role="users/stack"
           >
             <Text fontSize={"3xl"} mt={2} mb={6}>
-              Usuários
+              Listagem de usuários - Individual
             </Text>
+            {user?.role === "User" ? (
+              false
+            ) : (
+              <StdButton
+                onClick={onOpen}
+                w="11rem"
+                h="3rem"
+                borderRadius="3xl"
+                fontSize="0.875rem"
+                fontWeight="bold"
+              >
+                CADASTRAR
+              </StdButton>
+            )}
           </Stack>
           <DataTable
             data={data?.rows ?? []}

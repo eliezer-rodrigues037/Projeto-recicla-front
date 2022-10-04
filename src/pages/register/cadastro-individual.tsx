@@ -1,3 +1,5 @@
+import Head from "next/head";
+import InputMask from "react-input-mask";
 import {
   Flex,
   Image,
@@ -18,7 +20,6 @@ import {
 } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import Head from "next/head";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -29,9 +30,8 @@ import { EntityTypes } from "../../components/EntityTypes";
 import { useMutation } from "react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerUserSchema } from "../../validations/registerUserSchema";
-import InputMask from "react-input-mask";
-import api from "../../services/api";
 import { registerBancSchema } from "../../validations/registerBancSchema";
+import api from "../../services/api";
 
 type RegisterUserData = {
   name: string;
@@ -113,6 +113,8 @@ const CadastroIndividual: NextPage = () => {
 
   const userData = watchUser();
   const bancData = watchBanc();
+
+  /** ------------------- Handle Submit -------------------*/
 
   const handleSubmit = async () => {
     if (step == 2) {

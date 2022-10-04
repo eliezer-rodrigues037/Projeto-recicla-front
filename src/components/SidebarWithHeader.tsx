@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactElement, ReactNode } from "react";
 import { useRouter } from "next/router";
 import {
   IconButton,
@@ -32,15 +32,40 @@ import { IconType } from "react-icons";
 import { ReactText } from "react";
 import { useAuth } from "../hooks/useAuth";
 import Image from "next/image";
+import { HiOutlineUser } from "react-icons/hi";
 
 type LinkItemProps = {
   name: string;
   pageLink: string;
-  icon: IconType;
+  icon: IconType | undefined;
+  role: "user" | "corp" | "adm";
 };
 
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Usuários", pageLink: "/users", icon: FiUsers },
+  {
+    name: "Usuários",
+    pageLink: "/users/individual",
+    icon: HiOutlineUser,
+    role: "adm",
+  },
+  {
+    name: "Individual",
+    pageLink: "/users/individual",
+    icon: undefined,
+    role: "adm",
+  },
+  {
+    name: "Corporativo",
+    pageLink: "/users/corp",
+    icon: undefined,
+    role: "adm",
+  },
+  {
+    name: "Materiais",
+    pageLink: "/materiais/corp",
+    icon: undefined,
+    role: "adm",
+  },
 ];
 
 export const SidebarWithHeader = ({ children }: { children: ReactNode }) => {
@@ -114,7 +139,11 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           overflowY={"auto"}
         >
           {LinkItems?.map((link) => (
-            <NavItem key={link.name} icon={link.icon} pageLink={link.pageLink}>
+            <NavItem
+              key={link.name}
+              icon={link.icon ? link.icon : undefined}
+              pageLink={link.pageLink}
+            >
               {link.name}
             </NavItem>
           ))}
@@ -125,7 +154,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 };
 
 interface NavItemProps extends FlexProps {
-  icon: IconType;
+  icon: IconType | undefined;
   pageLink: string;
   children: ReactText;
 }
@@ -133,7 +162,7 @@ interface NavItemProps extends FlexProps {
 const NavItem = ({ pageLink, icon, children, ...rest }: NavItemProps) => {
   const router = useRouter();
 
-  const isCurrentLinkSelected = router.pathname === pageLink;
+  const isCurrentLinkSelected = router.pathname === pageLink && icon;
 
   return (
     <Link
@@ -146,11 +175,12 @@ const NavItem = ({ pageLink, icon, children, ...rest }: NavItemProps) => {
         p="4"
         role="group"
         cursor="pointer"
-        bg={isCurrentLinkSelected ? "blue.500" : ""}
+        bg={isCurrentLinkSelected ? "green.500" : ""}
         color={isCurrentLinkSelected ? "#fff" : ""}
-        borderRight={isCurrentLinkSelected ? "5px solid #140f5e" : ""}
+        borderLeft={isCurrentLinkSelected ? "5px solid" : ""}
+        borderLeftColor={isCurrentLinkSelected ? "black.900" : ""}
         _hover={{
-          bg: "blue.500",
+          bg: "green.500",
           color: "#fff",
         }}
         {...rest}
