@@ -39,8 +39,8 @@ type UpdateUserData = {
   email: string;
   cel: string | null;
   birthDate: string;
-  password?: string;
-  comfirmPassword?: string;
+  password?: string | null;
+  comfirmPassword?: string | null;
 };
 
 export const UpdateUserModal = ({
@@ -66,8 +66,8 @@ export const UpdateUserModal = ({
     cpf: chosenUser.cpf,
     cel: chosenUser.cel,
     birthDate: chosenUser.birthDate,
-    comfirmPassword: "",
-    password: "",
+    password: null,
+    comfirmPassword: null,
   };
 
   const {
@@ -78,7 +78,7 @@ export const UpdateUserModal = ({
   } = useForm<UpdateUserData>({
     mode: "onTouched",
     reValidateMode: "onSubmit",
-    //resolver: yupResolver(updateUserSchema),
+    resolver: yupResolver(updateUserSchema),
     defaultValues: defaultUserData,
   });
 
@@ -87,7 +87,7 @@ export const UpdateUserModal = ({
   const handleEditUser = async () => {
     let data;
     delete userData["comfirmPassword"];
-    if (userData.password === "") {
+    if (userData.password === null) {
       delete userData["password"];
       data = userData;
     } else data = userData;

@@ -3,25 +3,18 @@ import * as yup from "yup";
 const updateUserSchema = yup.object().shape({
   name: yup
     .string()
+    .required("Nome é um campo obrigatório.")
     .min(4, "O nome deve possuir no mínimo 4 caracteres.")
     .max(200, "O nome deve possuir no máximo 200 caracteres."),
-  username: yup
+  cpf: yup.string().required("CPF é um campo obrigatório."),
+  email: yup
     .string()
-    .min(8, "O nome de usuário deve possuir no mínimo 8 caracteres.")
-    .max(30, "O nome de usuário deve possuir no máximo 30 caracteres."),
-  email: yup.string().email("O campo deve ser um e-mail válido."),
-  phone: yup
+    .email("O campo deve ser um e-mail válido.")
+    .required("E-mail é um campo obrigatório."),
+  cel: yup.string().required("Celular é um campo obrigatório."),
+  birthDate: yup
     .string()
-    .nullable()
-    .min(14, "O celular deve possuir no mínimo 14 caracteres.")
-    .max(15, "O celular deve possuir no máximo 15 caracteres."),
-  role: yup
-    .mixed()
-    .oneOf(
-      ["Admin", "User"],
-      "A função deve ser um dos seguintes valores: Admin, User."
-    )
-    .default("User"),
+    .required("Data de nascimento é um campo obrigatório."),
   password: yup
     .string()
     .nullable()
@@ -40,6 +33,10 @@ const updateUserSchema = yup.object().shape({
         return true;
       }
     ),
+  comfirmPassword: yup
+    .string()
+    .nullable()
+    .oneOf([yup.ref("password"), null], "Senhas devem coincidir"),
 });
 
 export default updateUserSchema;
