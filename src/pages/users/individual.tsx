@@ -5,10 +5,10 @@ import { SidebarWithHeader } from "../../components/SidebarWithHeader";
 import { Button, Stack, Text, useDisclosure } from "@chakra-ui/react";
 import { UserRows } from "../../types/UserRows";
 import api from "../../services/api";
-import { AddUserModal } from "../../components/AddUserModal";
+import { AddUserModal } from "../../components/users/AddUserModal";
 import { useQuery } from "react-query";
-import { DataTable } from "../../components/DataTable";
-import { UsersMain } from "../../components/UsersMain";
+import { UserDataTable } from "../../components/users/UserDataTable";
+import { UsersMain } from "../../components/users/UsersMain";
 import { useAuth } from "../../hooks/useAuth";
 import { StdButton } from "../../components/StdButton";
 
@@ -20,9 +20,9 @@ const Users: NextPage = () => {
   const { user } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [page, setPage] = useState<number>(0);
-  const [pageSize, setPageSize] = useState<number>(5);
-  const [q, setQ] = useState<string>("");
+  const [page, setPage] = useState<number>(0); //Página atual
+  const [pageSize, setPageSize] = useState<number>(5); //Tamanho da página
+  const [q, setQ] = useState<string>(""); //Querry da barra de pesquisa;
 
   const handleGetAllUsers = async ({
     queryKey,
@@ -76,7 +76,7 @@ const Users: NextPage = () => {
               </StdButton>
             )}
           </Stack>
-          <DataTable
+          <UserDataTable
             data={data?.rows ?? []}
             count={data?.count ?? 0}
             page={page}
@@ -85,7 +85,6 @@ const Users: NextPage = () => {
             setPageSize={setPageSize}
             q={q}
             setQ={setQ}
-            onOpen={onOpen}
           />
         </SidebarWithHeader>
       </UsersMain>

@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode } from "react";
+import React, { ElementType, ReactNode } from "react";
 import { useRouter } from "next/router";
 import {
   IconButton,
@@ -33,11 +33,12 @@ import { ReactText } from "react";
 import { useAuth } from "../hooks/useAuth";
 import Image from "next/image";
 import { HiOutlineUser } from "react-icons/hi";
+import { MaterialsIcon, UserIcon } from "../assets/icons";
 
 type LinkItemProps = {
   name: string;
   pageLink: string;
-  icon: IconType | undefined;
+  icon: IconType | ElementType | undefined;
   role: "user" | "corp" | "adm";
 };
 
@@ -45,7 +46,7 @@ const LinkItems: Array<LinkItemProps> = [
   {
     name: "Usuários",
     pageLink: "/users/individual",
-    icon: HiOutlineUser,
+    icon: UserIcon,
     role: "adm",
   },
   {
@@ -62,8 +63,8 @@ const LinkItems: Array<LinkItemProps> = [
   },
   {
     name: "Materiais",
-    pageLink: "/materiais/corp",
-    icon: undefined,
+    pageLink: "/materials",
+    icon: MaterialsIcon,
     role: "adm",
   },
 ];
@@ -154,9 +155,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 };
 
 interface NavItemProps extends FlexProps {
-  icon: IconType | undefined;
+  icon: IconType | ElementType | undefined;
   pageLink: string;
-  children: ReactText;
 }
 
 const NavItem = ({ pageLink, icon, children, ...rest }: NavItemProps) => {
@@ -175,8 +175,8 @@ const NavItem = ({ pageLink, icon, children, ...rest }: NavItemProps) => {
         p="4"
         role="group"
         cursor="pointer"
-        bg={isCurrentLinkSelected ? "green.500" : ""}
-        color={isCurrentLinkSelected ? "#fff" : ""}
+        bg={icon ? "green.500" : ""}
+        color={icon ? "#fff" : "black"}
         borderLeft={isCurrentLinkSelected ? "5px solid" : ""}
         borderLeftColor={isCurrentLinkSelected ? "black.900" : ""}
         _hover={{
@@ -187,7 +187,6 @@ const NavItem = ({ pageLink, icon, children, ...rest }: NavItemProps) => {
       >
         {icon && (
           <Icon
-            mr="4"
             fontSize="16"
             _groupHover={{
               color: "#fff",
@@ -195,7 +194,7 @@ const NavItem = ({ pageLink, icon, children, ...rest }: NavItemProps) => {
             as={icon}
           />
         )}
-        {children}
+        <Text ml="4">{children}</Text>
       </Flex>
     </Link>
   );

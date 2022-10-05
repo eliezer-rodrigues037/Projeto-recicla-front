@@ -13,7 +13,7 @@ import {
   HiOutlineChevronRight,
   HiOutlineChevronDoubleRight,
 } from "react-icons/hi";
-import { User } from "../types/User";
+import { User } from "../../types/User";
 import { UpdateUserModal } from "./UpdateUserModal";
 import { DeleteUserModal } from "./DeleteUserModal";
 import {
@@ -26,7 +26,6 @@ import {
   Tr,
   Button,
   Input,
-  Avatar,
   IconButton,
   Text,
   Tooltip,
@@ -36,13 +35,12 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
-  VStack,
   Flex,
   HStack,
 } from "@chakra-ui/react";
-import { useAuth } from "../hooks/useAuth";
-import { StdButton } from "./StdButton";
-import { AnimatedStack } from "./AnimatedStack";
+import { useAuth } from "../../hooks/useAuth";
+import { StdButton } from "../StdButton";
+import { AnimatedStack } from "../AnimatedStack";
 import { motion } from "framer-motion";
 
 type DataTableProps = {
@@ -54,10 +52,9 @@ type DataTableProps = {
   setPageSize: Dispatch<SetStateAction<number>>;
   q: string;
   setQ: Dispatch<SetStateAction<string>>;
-  onOpen: () => void;
 };
 
-export const DataTable = ({
+export const UserDataTable = ({
   data,
   count,
   page,
@@ -66,7 +63,6 @@ export const DataTable = ({
   setPageSize,
   q,
   setQ,
-  onOpen,
 }: DataTableProps) => {
   const { user } = useAuth();
 

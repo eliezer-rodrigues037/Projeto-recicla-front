@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { User } from "../types/User";
+import { User } from "../../types/User";
 import {
   Button,
   FormControl,
@@ -22,10 +22,10 @@ import {
 import { useMutation, useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import updateUserSchema from "../validations/updateUserSchema";
+import updateUserSchema from "../../validations/updateUserSchema";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import api from "../services/api";
-import { formatCellphone, formatCPF } from "../utils/formatter";
+import api from "../../services/api";
+import { formatCellphone, formatCPF } from "../../utils/formatter";
 
 type UpdateUserModalProps = {
   chosenUser: User;

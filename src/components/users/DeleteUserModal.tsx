@@ -11,8 +11,8 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import api from "../services/api";
-import { User } from "../types/User";
+import api from "../../services/api";
+import { User } from "../../types/User";
 import { useMutation, useQueryClient } from "react-query";
 
 type DeleteUserModalProps = {

@@ -26,7 +26,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { AnimatedStack } from "../../components/AnimatedStack";
 import { StdButton } from "../../components/StdButton";
 import { WhiteBgButton } from "../../components/WhiteBgButton";
-import { EntityTypes } from "../../components/EntityTypes";
+import { EntityTypes } from "../../components/users/EntityTypes";
 import { useMutation } from "react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerUserSchema } from "../../validations/registerUserSchema";

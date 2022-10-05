@@ -29,7 +29,7 @@ import { registerBancSchema } from "../../validations/registerBancSchema";
 import { registerCropUserSchema } from "../../validations/registerCropUserSchema";
 import { StdButton } from "../../components/StdButton";
 import { WhiteBgButton } from "../../components/WhiteBgButton";
-import { EntityTypes } from "../../components/EntityTypes";
+import { EntityTypes } from "../../components/users/EntityTypes";
 
 type RegisterCropUserData = {
   socialReason: string;

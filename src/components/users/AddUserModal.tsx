@@ -24,15 +24,15 @@ import {
 import { useMutation, useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { registerUserSchema } from "../validations/registerUserSchema";
+import { registerUserSchema } from "../../validations/registerUserSchema";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import api from "../services/api";
-import { formatCellphone, formatCPF } from "../utils/formatter";
-import { WhiteBgButton } from "./WhiteBgButton";
-import { registerBancSchema } from "../validations/registerBancSchema";
+import api from "../../services/api";
+import { formatCellphone, formatCPF } from "../../utils/formatter";
+import { WhiteBgButton } from "../WhiteBgButton";
+import { registerBancSchema } from "../../validations/registerBancSchema";
 import { EntityTypes } from "./EntityTypes";
-import { User } from "../types/User";
-import { Banc } from "../types/Banc";
+import { User } from "../../types/User";
+import { Banc } from "../../types/Banc";
 
 type AddUserModalProps = {
   isOpen: boolean;
