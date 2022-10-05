@@ -1,12 +1,12 @@
 export type User = {
   id: string;
   name: string;
-  username: string;
   email: string;
+  cpf: string;
   cel: string;
-  phone?: string | null;
+  birthDate: string;
   role: "Admin" | "User";
   created_at: string;
-  avatar: string | "";
+  avatar?: string | "";
   password: string | null;
 };

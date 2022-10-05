@@ -85,7 +85,7 @@ export const AddUserModal = ({ isOpen, onClose }: AddUserModalProps) => {
 
   /** ------------------- Form default data -------------------*/
 
-  const defaultUerData: AddUserData = {
+  const defaultUserData: AddUserData = {
     name: "",
     cpf: "",
     email: "",
@@ -113,7 +113,7 @@ export const AddUserModal = ({ isOpen, onClose }: AddUserModalProps) => {
     mode: "onTouched",
     reValidateMode: "onSubmit",
     resolver: yupResolver(registerUserSchema),
-    defaultValues: defaultUerData,
+    defaultValues: defaultUserData,
   });
 
   const {
@@ -135,7 +135,7 @@ export const AddUserModal = ({ isOpen, onClose }: AddUserModalProps) => {
 
   const handleCreateUser = async (): Promise<UsersApiResponse> => {
     delete userData["comfirmPassword"];
-    
+
     const response: UsersApiResponse = await api.post("/users", {
       userData,
       bancData,

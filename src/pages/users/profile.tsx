@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Head from "next/head";
 import { NextPage } from "next";
-import { SidebarWithHeader } from "../components/SidebarWithHeader";
+import { SidebarWithHeader } from "../../components/SidebarWithHeader";
 import {
   Avatar,
   AvatarBadge,
@@ -22,15 +22,15 @@ import {
   TabPanel,
   Box,
 } from "@chakra-ui/react";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 import { useMutation, useQueryClient } from "react-query";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import updateUserSchema from "../validations/updateUserSchema";
+import updateUserSchema from "../../validations/updateUserSchema";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { IoCloseOutline } from "react-icons/io5";
-import { formatCellphone } from "../utils/formatter";
-import { User } from "../types/User";
+import { formatCellphone } from "../../utils/formatter";
+import { User } from "../../types/User";
 
 const Profile: NextPage = () => {
   const { user, updateUser, handleRemoveUserAvatar, handleChangeUserAvatar } =

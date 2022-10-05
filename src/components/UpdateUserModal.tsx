@@ -25,7 +25,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import updateUserSchema from "../validations/updateUserSchema";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import api from "../services/api";
-import { formatCellphone } from "../utils/formatter";
+import { formatCellphone, formatCPF } from "../utils/formatter";
 
 type UpdateUserModalProps = {
   chosenUser: User;
@@ -35,11 +35,12 @@ type UpdateUserModalProps = {
 
 type UpdateUserData = {
   name: string;
-  username: string;
+  cpf: string;
   email: string;
-  phone: string | null;
-  role: "Admin" | "User";
-  password: null;
+  cel: string | null;
+  birthDate: string;
+  password?: string;
+  comfirmPassword?: string;
 };
 
 export const UpdateUserModal = ({
@@ -54,54 +55,42 @@ export const UpdateUserModal = ({
   const queryClient = useQueryClient();
 
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const [isComfirmPasswordVisible, setIsComfirmPasswordVisible] =
+    useState<boolean>(false);
 
-  const defaultValues: UpdateUserData = {
+  const required = true; // Controls the 'isRequired' property of all FormControl components.
+
+  const defaultUserData: UpdateUserData = {
     name: chosenUser.name,
-    username: chosenUser.username,
     email: chosenUser.email,
-    phone: chosenUser.phone ?? null,
-    role: chosenUser.role,
-    password: null,
+    cpf: chosenUser.cpf,
+    cel: chosenUser.cel,
+    birthDate: chosenUser.birthDate,
+    comfirmPassword: "",
+    password: "",
   };
 
   const {
-    register,
+    register: registerUser,
     handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
+    watch: watchUser,
+    formState: { errors: errorsUser },
   } = useForm<UpdateUserData>({
     mode: "onTouched",
     reValidateMode: "onSubmit",
-    resolver: yupResolver(updateUserSchema),
-    defaultValues,
+    //resolver: yupResolver(updateUserSchema),
+    defaultValues: defaultUserData,
   });
 
-  const values = watch();
-
-  if (values.phone === "") setValue("phone", null);
-  if (values.password === "") setValue("password", null);
+  const userData = watchUser();
 
   const handleEditUser = async () => {
     let data;
-
-    if (values.password === null)
-      data = {
-        name: values.name,
-        username: values.username,
-        email: values.email,
-        phone: values.phone,
-        role: values.role,
-      };
-    else
-      data = {
-        name: values.name,
-        username: values.username,
-        email: values.email,
-        phone: values.phone,
-        role: values.role,
-        password: values.password,
-      };
+    delete userData["comfirmPassword"];
+    if (userData.password === "") {
+      delete userData["password"];
+      data = userData;
+    } else data = userData;
 
     const response = await api.put(`/users/${chosenUser.id}`, data);
 
@@ -146,108 +135,147 @@ export const UpdateUserModal = ({
         <ModalCloseButton />
         <ModalBody>
           <Stack as="form" onSubmit={handleSubmit(() => mutate())}>
-            <FormControl isRequired>
-              <FormLabel>Nome</FormLabel>
-              <Input
-                {...register("name")}
-                focusBorderColor={"blue.500"}
-                type="text"
-              />
-              {errors && errors.name && (
-                <FormHelperText>
-                  {errors.name.message && errors.name.message}
-                </FormHelperText>
-              )}
-            </FormControl>
+            <HStack>
+              <FormControl isRequired={required}>
+                <FormLabel>Nome</FormLabel>
+                <Input
+                  {...registerUser("name")}
+                  focusBorderColor={"green.500"}
+                  type="text"
+                />
+                {errorsUser && errorsUser.name && (
+                  <FormHelperText>
+                    {errorsUser.name.message && errorsUser.name.message}
+                  </FormHelperText>
+                )}
+              </FormControl>
 
-            <FormControl isRequired>
-              <FormLabel>Nome de usuário</FormLabel>
-              <Input
-                {...register("username")}
-                focusBorderColor={"blue.500"}
-                type="text"
-              />
-              {errors && errors.username && (
-                <FormHelperText>
-                  {errors.username.message && errors.username.message}
-                </FormHelperText>
-              )}
-            </FormControl>
+              <FormControl isRequired={required}>
+                <FormLabel>CPF</FormLabel>
+                <Input
+                  {...registerUser("cpf")}
+                  focusBorderColor={"green.500"}
+                  type="text"
+                  value={formatCPF(userData.cpf ? userData.cpf : "")}
+                />
+                {errorsUser && errorsUser.cpf && (
+                  <FormHelperText>
+                    {errorsUser.cpf.message && errorsUser.cpf.message}
+                  </FormHelperText>
+                )}
+              </FormControl>
+            </HStack>
 
-            <FormControl isRequired>
+            <FormControl isRequired={required}>
               <FormLabel>E-mail</FormLabel>
               <Input
-                {...register("email")}
-                focusBorderColor={"blue.500"}
+                {...registerUser("email")}
+                focusBorderColor={"green.500"}
                 type="email"
               />
-              {errors && errors.email && (
+              {errorsUser && errorsUser.email && (
                 <FormHelperText>
-                  {errors.email.message && errors.email.message}
+                  {errorsUser.email.message && errorsUser.email.message}
                 </FormHelperText>
               )}
             </FormControl>
-
-            <FormControl>
-              <FormLabel>Telefone</FormLabel>
-              <Input
-                {...register("phone")}
-                focusBorderColor={"blue.500"}
-                type="text"
-                value={formatCellphone(values.phone ? values.phone : "")}
-                maxLength={15}
-              />
-              {errors && errors.phone && (
-                <FormHelperText>
-                  {errors.phone.message && errors.phone.message}
-                </FormHelperText>
-              )}
-            </FormControl>
-
-            <FormControl>
-              <FormLabel>Função</FormLabel>
-              <Select {...register("role")} placeholder="Selecione">
-                <option value="Admin">Admin</option>
-                <option value="User">User</option>
-              </Select>
-              {errors && errors.role && (
-                <FormHelperText>
-                  {errors.role.message && errors.role.message}
-                </FormHelperText>
-              )}
-            </FormControl>
-
-            <FormControl>
-              <FormLabel>Senha</FormLabel>
-              <InputGroup>
+            <HStack>
+              <FormControl isRequired={required}>
+                <FormLabel>CELULAR</FormLabel>
                 <Input
-                  {...register("password")}
-                  focusBorderColor={"blue.500"}
-                  type={isPasswordVisible ? "text" : "password"}
+                  {...registerUser("cel")}
+                  focusBorderColor={"green.500"}
+                  type="text"
+                  value={formatCellphone(userData.cel ? userData.cel : "")}
+                  maxLength={15}
                 />
-                <InputRightElement width={"3.5rem"}>
-                  {isPasswordVisible ? (
-                    <AiOutlineEye
-                      size={24}
-                      cursor="pointer"
-                      onClick={() => setIsPasswordVisible(false)}
-                    />
-                  ) : (
-                    <AiOutlineEyeInvisible
-                      size={24}
-                      cursor="pointer"
-                      onClick={() => setIsPasswordVisible(true)}
-                    />
-                  )}
-                </InputRightElement>
-              </InputGroup>
-              {errors && errors.password && (
-                <FormHelperText>
-                  {errors.password.message && errors.password.message}
-                </FormHelperText>
-              )}
-            </FormControl>
-
+                {errorsUser && errorsUser.cel && (
+                  <FormHelperText>
+                    {errorsUser.cel.message && errorsUser.cel.message}
+                  </FormHelperText>
+                )}
+              </FormControl>
+              <FormControl>
+                <FormLabel>DATA DE NASCIMENTO</FormLabel>
+                <Input
+                  {...registerUser("birthDate")}
+                  focusBorderColor={"green.500"}
+                  type="date"
+                  maxLength={15}
+                />
+                {errorsUser && errorsUser.birthDate && (
+                  <FormHelperText>
+                    {errorsUser.birthDate.message &&
+                      errorsUser.birthDate.message}
+                  </FormHelperText>
+                )}
+              </FormControl>
+            </HStack>
+            <HStack>
+              <FormControl>
+                <FormLabel>Senha</FormLabel>
+                <InputGroup>
+                  <Input
+                    {...registerUser("password")}
+                    focusBorderColor={"green.500"}
+                    type={isPasswordVisible ? "text" : "password"}
+                  />
+                  <InputRightElement width={"3.5rem"}>
+                    {isPasswordVisible ? (
+                      <AiOutlineEye
+                        size={24}
+                        cursor="pointer"
+                        onClick={() => setIsPasswordVisible(false)}
+                      />
+                    ) : (
+                      <AiOutlineEyeInvisible
+                        size={24}
+                        cursor="pointer"
+                        onClick={() => setIsPasswordVisible(true)}
+                      />
+                    )}
+                  </InputRightElement>
+                </InputGroup>
+                {errorsUser && errorsUser.password && (
+                  <FormHelperText>
+                    {errorsUser.password.message && errorsUser.password.message}
+                  </FormHelperText>
+                )}
+              </FormControl>
+              <FormControl id="comfirmPassword">
+                <FormLabel>REPETIR SENHA</FormLabel>
+                <InputGroup>
+                  <Input
+                    isInvalid={
+                      errorsUser && errorsUser.comfirmPassword ? true : false
+                    }
+                    {...registerUser("comfirmPassword")}
+                    focusBorderColor="green.500"
+                    type={isComfirmPasswordVisible ? "text" : "password"}
+                  />
+                  <InputRightElement width={"3.5rem"}>
+                    {isComfirmPasswordVisible ? (
+                      <AiOutlineEye
+                        size={24}
+                        cursor="pointer"
+                        onClick={() => setIsComfirmPasswordVisible(false)}
+                      />
+                    ) : (
+                      <AiOutlineEyeInvisible
+                        size={24}
+                        cursor="pointer"
+                        onClick={() => setIsComfirmPasswordVisible(true)}
+                      />
+                    )}
+                  </InputRightElement>
+                </InputGroup>
+                {errorsUser && errorsUser.comfirmPassword && (
+                  <FormHelperText>
+                    {errorsUser.comfirmPassword.message}
+                  </FormHelperText>
+                )}
+              </FormControl>
+            </HStack>
             <HStack style={{ marginTop: "32px" }} justifyContent={"flex-end"}>
               <Button mr={3} onClick={onClose}>
                 Fechar

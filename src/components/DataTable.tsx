@@ -1,4 +1,4 @@
-import { useState, Dispatch, SetStateAction } from "react";
+import { useState, Dispatch, SetStateAction, useRef, useEffect } from "react";
 import {
   AiOutlineDelete,
   AiOutlineEdit,
@@ -42,6 +42,8 @@ import {
 } from "@chakra-ui/react";
 import { useAuth } from "../hooks/useAuth";
 import { StdButton } from "./StdButton";
+import { AnimatedStack } from "./AnimatedStack";
+import { motion } from "framer-motion";
 
 type DataTableProps = {
   data: User[];
@@ -82,6 +84,37 @@ export const DataTable = ({
 
   const [chosenUser, setChosenUser] = useState<User | null>(null);
 
+  const [isSetingsOpen, setIsSetingsOpen] = useState<Boolean[]>([]);
+  const settingsElement = useRef<Array<HTMLDivElement>>([]);
+
+  function handleOpenSetings(index: number) {
+    if (!isSetingsOpen[index]) {
+      setIsSetingsOpen((before) => [
+        ...before,
+        (before[index] = !before[index]),
+      ]);
+      if (settingsElement && settingsElement.current) {
+        settingsElement.current[index].style.opacity = "1";
+        settingsElement.current[index].style.left = "0";
+        settingsElement.current[index].style.visibility = "visible";
+      }
+    } else {
+      setIsSetingsOpen((before) => [
+        ...before,
+        (before[index] = !before[index]),
+      ]);
+      if (settingsElement && settingsElement.current) {
+        settingsElement.current[index].style.left = "-10";
+        settingsElement.current[index].style.opacity = "0";
+        settingsElement.current[index].style.visibility = "hidden";
+      }
+    }
+  }
+
+  useEffect(() => {
+    settingsElement.current = settingsElement.current.slice(0, data.length);
+  }, [data]);
+
   return (
     <>
       {isOpenEditModal && chosenUser ? (
@@ -121,6 +154,8 @@ export const DataTable = ({
             <Input
               borderRadius="3xl"
               placeholder="Pesquisar"
+              _placeholder={{ color: "gray.400" }}
+              color="black"
               value={q}
               onChange={(e) => {
                 setQ(e.target.value);
@@ -165,8 +200,28 @@ export const DataTable = ({
                     <Td>{item?.cel}</Td>
                     {user?.role === "Admin" ? (
                       <Td>
-                        <HStack>
-                          <Flex flexDir="column">
+                        <HStack spacing="0">
+                          <Button
+                            bg="none"
+                            onClick={() => handleOpenSetings(index)}
+                          >
+                            <FiSettings />
+                          </Button>
+                          <Flex
+                            flexDir="column"
+                            position="relative"
+                            opacity="0"
+                            objectPosition="relative"
+                            left="-10"
+                            transition="all 0.5s"
+                            visibility="hidden"
+                            ref={(el) => {
+                              el
+                                ? (settingsElement.current[index] = el)
+                                : false;
+                              isSetingsOpen.push(false);
+                            }}
+                          >
                             <StdButton
                               onClick={() => {
                                 setChosenUser(item);
@@ -203,9 +258,6 @@ export const DataTable = ({
                               Deletar
                             </StdButton>
                           </Flex>
-                          <span>
-                            <FiSettings />
-                          </span>
                         </HStack>
                       </Td>
                     ) : (
