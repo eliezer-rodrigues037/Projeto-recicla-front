@@ -1,4 +1,4 @@
-export type Materials = {
+export type Material = {
   id: string;
   name: string;
   price: string;

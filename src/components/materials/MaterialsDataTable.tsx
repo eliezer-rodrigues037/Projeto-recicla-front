@@ -30,11 +30,11 @@ import {
 } from "react-icons/hi";
 import { MdClear } from "react-icons/md";
 import { useAuth } from "../../hooks/useAuth";
-import { Materials } from "../../types/Materials";
+import { Material } from "../../types/Materials";
 import { StdButton } from "../StdButton";
 
 type DataTableProps = {
-  data: Materials[];
+  data: Material[];
   count: number; // Total de usuários
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
@@ -116,8 +116,13 @@ export const MaterialsDataTable = ({
                       )}
                     </Td>
                     <Td>{material?.name}</Td>
-                    <Td>{material.price}</Td>
-                    <Td>{material.status}</Td>
+                    <Td>
+                      {Number(material.price).toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </Td>
+                    <Td>{material.status ? "Ativo" : "Inativo"}</Td>
                     {user?.role === "Admin" ? (
                       <Td>
                         <HStack spacing="0">

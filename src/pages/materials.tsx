@@ -1,8 +1,9 @@
-import { Stack, Text } from "@chakra-ui/react";
+import { Box, Stack, Text, useDisclosure } from "@chakra-ui/react";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import { AddMaterialModal } from "../components/materials/AddMaterialModal";
 import { MaterialsDataTable } from "../components/materials/MaterialsDataTable";
 import { SidebarWithHeader } from "../components/SidebarWithHeader";
 import { StdButton } from "../components/StdButton";
@@ -21,11 +22,15 @@ const Materials: NextPage = () => {
   const [pageSize, setPageSize] = useState<number>(5); // Pagination size.
   const [searchQuery, setSearchQuery] = useState<string>(""); // Search query string.
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  /** ------------------------- Data fetching ---------------------------------- */
+
   const handleGetAllMaterials = async ({
     queryKey,
   }: IHandleGetAllUsersProps): Promise<MaterialsRows> => {
     const response = await api.get<MaterialsRows>(
-      `${queryKey[0]}?page=${queryKey[1]}&pageSize=${queryKey[2]}&q=${queryKey[3]}`
+      `${queryKey[0]}?page=${queryKey[1]}&pageSize=${queryKey[2]}&searchQuery=${queryKey[3]}`
     );
 
     return response.data;
@@ -38,7 +43,8 @@ const Materials: NextPage = () => {
   );
 
   return (
-    <>
+    <Box w="100%" h="100%">
+      {isOpen ? <AddMaterialModal isOpen={isOpen} onClose={onClose} /> : false}
       <Head>
         <title>Materiais</title>
       </Head>
@@ -57,7 +63,7 @@ const Materials: NextPage = () => {
             false
           ) : (
             <StdButton
-              // onClick={onOpen}
+              onClick={onOpen}
               w="11rem"
               h="3rem"
               borderRadius="3xl"
@@ -80,7 +86,7 @@ const Materials: NextPage = () => {
         />
         <Text>{status}</Text>
       </SidebarWithHeader>
-    </>
+    </Box>
   );
 };
 

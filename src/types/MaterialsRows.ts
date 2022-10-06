@@ -1,8 +1,8 @@
-import { Materials } from "./Materials";
+import { Material } from "./Materials";
 
 export type MaterialsRows = {
   count: number;
-  rows: Materials[];
+  rows: Material[];
   pageSize: number;
   page: number;
 };
