@@ -87,7 +87,8 @@ export const AddMaterialModal = ({
 
   const handleAddMaterial = async (): Promise<MaterialApiResponse> => {
     setIsLoading(true);
-
+    materialData.price = materialData.price.replace(",", ".");
+    console.log(materialData);
     const response: MaterialApiResponse = await api.post(
       "/materials",
       materialData
