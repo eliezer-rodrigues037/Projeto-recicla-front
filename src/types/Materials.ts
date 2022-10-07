@@ -4,5 +4,5 @@ export type Material = {
   price: string;
   status: boolean;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
 };

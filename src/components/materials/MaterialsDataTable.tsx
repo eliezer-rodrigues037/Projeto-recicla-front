@@ -15,12 +15,11 @@ import {
   Box,
   useDisclosure,
   InputGroup,
-  InputLeftElement,
   InputRightElement,
   Flex,
   HStack,
 } from "@chakra-ui/react";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { FiSettings } from "react-icons/fi";
 import {
   HiOutlineChevronDoubleLeft,
@@ -32,6 +31,7 @@ import { MdClear } from "react-icons/md";
 import { useAuth } from "../../hooks/useAuth";
 import { Material } from "../../types/Materials";
 import { StdButton } from "../StdButton";
+import { UpdateMaterialModal } from "./UpdateMaterialModal";
 
 type DataTableProps = {
   data: Material[];
@@ -55,8 +55,25 @@ export const MaterialsDataTable = ({
   setSearchQuery,
 }: DataTableProps) => {
   const { user } = useAuth();
+
+  const [chosenMaterial, setChosenMaterial] = useState<Material>();
+
+  const {
+    isOpen: isOpenEditModal,
+    onOpen: OnOpenEditModal,
+    onClose: onCloseEditModal,
+  } = useDisclosure();
   return (
     <>
+      {isOpenEditModal && chosenMaterial ? (
+        <UpdateMaterialModal
+          chosenMaterial={chosenMaterial}
+          isOpen={isOpenEditModal}
+          onClose={onCloseEditModal}
+        />
+      ) : (
+        false
+      )}
       <Box borderRadius="3xl" bg="white" mx="10" my="5" minH="lg">
         <Box
           mb={1}
@@ -131,10 +148,10 @@ export const MaterialsDataTable = ({
                           </Button>
                           <Flex flexDir="column">
                             <StdButton
-                              // onClick={() => {
-                              //   setChosenUser(item);
-                              //   OnOpenEditModal();
-                              // }}
+                              onClick={() => {
+                                setChosenMaterial(material);
+                                OnOpenEditModal();
+                              }}
                               colorScheme="green.500"
                               variant="solid"
                               color="green.500"
@@ -150,8 +167,8 @@ export const MaterialsDataTable = ({
 
                             <StdButton
                               // onClick={() => {
-                              //   setChosenUser(item);
-                              //   OnOpenDeleteModal();
+                              //   setChosenMaterial(material);
+                              //   OnOpenEditModal();
                               // }}
                               colorScheme="green.500"
                               variant="solid"

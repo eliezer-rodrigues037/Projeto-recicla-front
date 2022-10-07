@@ -1,38 +1,30 @@
 import {
   Button,
-  Flex,
   FormControl,
-  FormHelperText,
   FormLabel,
   HStack,
   Input,
   InputGroup,
   InputLeftAddon,
-  InputRightElement,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Radio,
-  RadioGroup,
-  Select,
   Stack,
   Switch,
-  useRadioGroup,
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { stringify } from "querystring";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Material } from "../../types/Materials";
 import { WhiteBgButton } from "../WhiteBgButton";
 import { formatCurrency } from "../../utils/formatter";
-import { isNull } from "util";
 import { useMutation } from "react-query";
 import api from "../../services/api";
+
 type AddMaterialModalProps = {
   isOpen: boolean;
   onClose: () => void;
