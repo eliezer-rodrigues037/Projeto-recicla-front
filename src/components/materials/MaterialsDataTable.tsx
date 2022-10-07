@@ -31,6 +31,7 @@ import { MdClear } from "react-icons/md";
 import { useAuth } from "../../hooks/useAuth";
 import { Material } from "../../types/Materials";
 import { StdButton } from "../StdButton";
+import { DeleteMaterialModal } from "./DeleteMaterialModal";
 import { UpdateMaterialModal } from "./UpdateMaterialModal";
 
 type DataTableProps = {
@@ -63,6 +64,12 @@ export const MaterialsDataTable = ({
     onOpen: OnOpenEditModal,
     onClose: onCloseEditModal,
   } = useDisclosure();
+
+  const {
+    isOpen: isOpenDeleteModal,
+    onOpen: OnOpenDeleteModal,
+    onClose: onCloseDeleteModal,
+  } = useDisclosure();
   return (
     <>
       {isOpenEditModal && chosenMaterial ? (
@@ -70,6 +77,15 @@ export const MaterialsDataTable = ({
           chosenMaterial={chosenMaterial}
           isOpen={isOpenEditModal}
           onClose={onCloseEditModal}
+        />
+      ) : (
+        false
+      )}
+      {isOpenDeleteModal && chosenMaterial ? (
+        <DeleteMaterialModal
+          chosenMaterial={chosenMaterial}
+          isOpen={isOpenDeleteModal}
+          onClose={onCloseDeleteModal}
         />
       ) : (
         false
@@ -166,10 +182,10 @@ export const MaterialsDataTable = ({
                             </StdButton>
 
                             <StdButton
-                              // onClick={() => {
-                              //   setChosenMaterial(material);
-                              //   OnOpenEditModal();
-                              // }}
+                              onClick={() => {
+                                setChosenMaterial(material);
+                                OnOpenDeleteModal();
+                              }}
                               colorScheme="green.500"
                               variant="solid"
                               color="green.500"
