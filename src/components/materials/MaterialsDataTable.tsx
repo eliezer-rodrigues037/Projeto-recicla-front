@@ -18,6 +18,10 @@ import {
   InputRightElement,
   Flex,
   HStack,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  Divider,
 } from "@chakra-ui/react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { FiSettings } from "react-icons/fi";
@@ -158,48 +162,58 @@ export const MaterialsDataTable = ({
                     <Td>{material.status ? "Ativo" : "Inativo"}</Td>
                     {user?.role === "Admin" ? (
                       <Td>
-                        <HStack spacing="0">
-                          <Button bg="none" onClick={() => console.log("yo")}>
-                            <FiSettings />
-                          </Button>
-                          <Flex flexDir="column">
-                            <StdButton
-                              onClick={() => {
-                                setChosenMaterial(material);
-                                OnOpenEditModal();
-                              }}
-                              colorScheme="green.500"
-                              variant="solid"
-                              color="green.500"
-                              aria-label="Delete"
-                              bg="gray.500"
-                              borderRadius="0"
-                              fontSize="1rem"
-                              w="100%"
-                              h="fit-content"
+                        <Popover placement="left">
+                          <HStack spacing="0">
+                            <PopoverTrigger>
+                              <Button bg="none">
+                                <FiSettings />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              border="none"
+                              w="fit-content"
+                              borderRadius="none"
                             >
-                              Editar
-                            </StdButton>
-
-                            <StdButton
-                              onClick={() => {
-                                setChosenMaterial(material);
-                                OnOpenDeleteModal();
-                              }}
-                              colorScheme="green.500"
-                              variant="solid"
-                              color="green.500"
-                              aria-label="Delete"
-                              bg="gray.500"
-                              borderRadius="0"
-                              fontSize="1rem"
-                              w="100%"
-                              h="fit-content"
-                            >
-                              Deletar
-                            </StdButton>
-                          </Flex>
-                        </HStack>
+                              <Flex flexDir="column">
+                                <StdButton
+                                  onClick={() => {
+                                    setChosenMaterial(material);
+                                    OnOpenEditModal();
+                                  }}
+                                  colorScheme="green.500"
+                                  variant="solid"
+                                  color="green.500"
+                                  aria-label="Delete"
+                                  bg="gray.500"
+                                  borderRadius="0"
+                                  fontSize="1rem"
+                                  w="100%"
+                                  h="fit-content"
+                                >
+                                  Editar
+                                </StdButton>
+                                <Divider />
+                                <StdButton
+                                  onClick={() => {
+                                    setChosenMaterial(material);
+                                    OnOpenDeleteModal();
+                                  }}
+                                  colorScheme="green.500"
+                                  variant="solid"
+                                  color="green.500"
+                                  aria-label="Delete"
+                                  bg="gray.500"
+                                  borderRadius="0"
+                                  fontSize="1rem"
+                                  w="100%"
+                                  h="fit-content"
+                                >
+                                  Deletar
+                                </StdButton>
+                              </Flex>
+                            </PopoverContent>
+                          </HStack>
+                        </Popover>
                       </Td>
                     ) : (
                       false

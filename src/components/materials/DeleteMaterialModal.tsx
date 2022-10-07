@@ -90,7 +90,7 @@ export const DeleteMaterialModal = ({
             <Button
               ref={initialRef}
               isLoading={status === "loading"}
-              colorScheme="blue"
+              colorScheme="green"
               onClick={() => mutate()}
             >
               Excluir

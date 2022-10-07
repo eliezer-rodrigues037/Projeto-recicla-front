@@ -25,6 +25,11 @@ import {
   useMediaQuery,
   useColorMode,
   Tooltip,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
 } from "@chakra-ui/react";
 import { FiUsers, FiMenu, FiChevronDown } from "react-icons/fi";
 import { FaSun, FaMoon } from "react-icons/fa";

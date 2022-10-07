@@ -84,7 +84,6 @@ const Materials: NextPage = () => {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
         />
-        <Text>{status}</Text>
       </SidebarWithHeader>
     </Box>
   );

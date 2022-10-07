@@ -37,11 +37,13 @@ import {
   InputRightElement,
   Flex,
   HStack,
+  PopoverTrigger,
+  PopoverContent,
+  Divider,
+  Popover,
 } from "@chakra-ui/react";
 import { useAuth } from "../../hooks/useAuth";
 import { StdButton } from "../StdButton";
-import { AnimatedStack } from "../AnimatedStack";
-import { motion } from "framer-motion";
 
 type DataTableProps = {
   data: User[];
@@ -82,34 +84,6 @@ export const UserDataTable = ({
 
   const [isSetingsOpen, setIsSetingsOpen] = useState<Boolean[]>([]);
   const settingsElement = useRef<Array<HTMLDivElement>>([]);
-
-  function handleOpenSetings(index: number) {
-    if (!isSetingsOpen[index]) {
-      setIsSetingsOpen((before) => [
-        ...before,
-        (before[index] = !before[index]),
-      ]);
-      if (settingsElement && settingsElement.current) {
-        settingsElement.current[index].style.opacity = "1";
-        settingsElement.current[index].style.left = "0";
-        settingsElement.current[index].style.visibility = "visible";
-      }
-    } else {
-      setIsSetingsOpen((before) => [
-        ...before,
-        (before[index] = !before[index]),
-      ]);
-      if (settingsElement && settingsElement.current) {
-        settingsElement.current[index].style.left = "-10";
-        settingsElement.current[index].style.opacity = "0";
-        settingsElement.current[index].style.visibility = "hidden";
-      }
-    }
-  }
-
-  useEffect(() => {
-    settingsElement.current = settingsElement.current.slice(0, data.length);
-  }, [data]);
 
   return (
     <>
@@ -196,65 +170,58 @@ export const UserDataTable = ({
                     <Td>{item?.cel}</Td>
                     {user?.role === "Admin" ? (
                       <Td>
-                        <HStack spacing="0">
-                          <Button
-                            bg="none"
-                            onClick={() => handleOpenSetings(index)}
-                          >
-                            <FiSettings />
-                          </Button>
-                          <Flex
-                            flexDir="column"
-                            position="relative"
-                            opacity="0"
-                            objectPosition="relative"
-                            left="-10"
-                            transition="all 0.5s"
-                            visibility="hidden"
-                            ref={(el) => {
-                              el
-                                ? (settingsElement.current[index] = el)
-                                : false;
-                              isSetingsOpen.push(false);
-                            }}
-                          >
-                            <StdButton
-                              onClick={() => {
-                                setChosenUser(item);
-                                OnOpenEditModal();
-                              }}
-                              colorScheme="green.500"
-                              variant="solid"
-                              color="green.500"
-                              aria-label="Delete"
-                              bg="gray.500"
-                              borderRadius="0"
-                              fontSize="1rem"
-                              w="100%"
-                              h="fit-content"
+                        <Popover placement="left">
+                          <HStack spacing="0">
+                            <PopoverTrigger>
+                              <Button bg="none">
+                                <FiSettings />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              border="none"
+                              w="fit-content"
+                              borderRadius="none"
                             >
-                              Editar
-                            </StdButton>
-
-                            <StdButton
-                              onClick={() => {
-                                setChosenUser(item);
-                                OnOpenDeleteModal();
-                              }}
-                              colorScheme="green.500"
-                              variant="solid"
-                              color="green.500"
-                              aria-label="Delete"
-                              bg="gray.500"
-                              borderRadius="0"
-                              fontSize="1rem"
-                              w="100%"
-                              h="fit-content"
-                            >
-                              Deletar
-                            </StdButton>
-                          </Flex>
-                        </HStack>
+                              <Flex flexDir="column">
+                                <StdButton
+                                  onClick={() => {
+                                    setChosenUser(item);
+                                    OnOpenEditModal();
+                                  }}
+                                  colorScheme="green.500"
+                                  variant="solid"
+                                  color="green.500"
+                                  aria-label="Delete"
+                                  bg="gray.500"
+                                  borderRadius="0"
+                                  fontSize="1rem"
+                                  w="100%"
+                                  h="fit-content"
+                                >
+                                  Editar
+                                </StdButton>
+                                <Divider />
+                                <StdButton
+                                  onClick={() => {
+                                    setChosenUser(item);
+                                    OnOpenDeleteModal();
+                                  }}
+                                  colorScheme="green.500"
+                                  variant="solid"
+                                  color="green.500"
+                                  aria-label="Delete"
+                                  bg="gray.500"
+                                  borderRadius="0"
+                                  fontSize="1rem"
+                                  w="100%"
+                                  h="fit-content"
+                                >
+                                  Deletar
+                                </StdButton>
+                              </Flex>
+                            </PopoverContent>
+                          </HStack>
+                        </Popover>
                       </Td>
                     ) : (
                       false

@@ -1,6 +1,7 @@
 import {
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   HStack,
   Input,
@@ -24,6 +25,8 @@ import { WhiteBgButton } from "../WhiteBgButton";
 import { formatCurrency } from "../../utils/formatter";
 import { useMutation } from "react-query";
 import api from "../../services/api";
+import { addMaterialSchema } from "../../validations/addMaterialSchema";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 type AddMaterialModalProps = {
   isOpen: boolean;
@@ -71,7 +74,7 @@ export const AddMaterialModal = ({
   } = useForm<AddMaterialData>({
     mode: "onTouched",
     reValidateMode: "onSubmit",
-    //resolver: yupResolver(addMaterialSchema),
+    resolver: yupResolver(addMaterialSchema),
     defaultValues: defaultMaterialData,
   });
 
@@ -141,9 +144,15 @@ export const AddMaterialModal = ({
                 <FormLabel>Nome</FormLabel>
                 <Input
                   {...registerMaterial("name")}
+                  isInvalid={
+                    errorsMaterial && errorsMaterial.name ? true : false
+                  }
                   focusBorderColor={"green.500"}
                   type="text"
                 />
+                {errorsMaterial && errorsMaterial.name && (
+                  <FormHelperText>{errorsMaterial.name.message}</FormHelperText>
+                )}
               </FormControl>
 
               <FormControl isRequired={required}>
@@ -152,10 +161,16 @@ export const AddMaterialModal = ({
                   <InputLeftAddon>{"R$"}</InputLeftAddon>
                   <Input
                     {...registerMaterial("price")}
+                    isInvalid={
+                      errorsMaterial && errorsMaterial.price ? true : false
+                    }
                     focusBorderColor={"green.500"}
                     type="text"
                     value={formatCurrency(materialData.price)}
                   />
+                  {errorsMaterial &&
+                    errorsMaterial.price &&
+                    errorsMaterial.price.message}
                 </InputGroup>
               </FormControl>
             </HStack>
