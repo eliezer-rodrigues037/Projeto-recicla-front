@@ -4,6 +4,7 @@ import { Material } from "../../types/Materials";
 import {
   Button,
   FormControl,
+  FormHelperText,
   FormLabel,
   HStack,
   Input,
@@ -24,6 +25,8 @@ import { useMutation, useQueryClient } from "react-query";
 import api from "../../services/api";
 import { formatCurrency } from "../../utils/formatter";
 import { WhiteBgButton } from "../WhiteBgButton";
+import { yupResolver } from "@hookform/resolvers/yup";
+import updateMaterialSchema from "../../validations/updateMaterialSchema";
 
 type UpdateMaterialsModalProps = {
   isOpen: boolean;
@@ -78,7 +81,7 @@ export const UpdateMaterialModal = ({
   } = useForm<UpdateMaterialData>({
     mode: "onTouched",
     reValidateMode: "onSubmit",
-    //resolver: yupResolver(updateMaterialSchema),
+    resolver: yupResolver(updateMaterialSchema),
     defaultValues: defaultMaterialData,
   });
 
@@ -150,29 +153,43 @@ export const UpdateMaterialModal = ({
               <HStack spacing="5">
                 <FormControl isRequired={required}>
                   <FormLabel>Nome</FormLabel>
-                  <Input
-                    {...registerMaterial("name")}
-                    focusBorderColor={"green.500"}
-                    type="text"
-                  />
+                  <InputGroup>
+                    <Input
+                      {...registerMaterial("name")}
+                      focusBorderColor={"green.500"}
+                      type="text"
+                    />
+                    {errorsMaterial && errorsMaterial.name && (
+                      <FormHelperText>
+                        {errorsMaterial.name.message}
+                      </FormHelperText>
+                    )}
+                  </InputGroup>
                 </FormControl>
 
                 <FormControl isRequired={required}>
                   <FormLabel>Preço/Kg</FormLabel>
                   <InputGroup>
                     <InputLeftAddon>{"R$"}</InputLeftAddon>
-                    <Input
-                      {...registerMaterial("price")}
-                      focusBorderColor={"green.500"}
-                      type="text"
-                      onClick={() => {
-                        if (!isClicked) {
-                          setValue("price", "");
-                          setIsClicked(true);
-                        }
-                      }}
-                      value={formatCurrency(materialData.price)}
-                    />
+                    <VStack>
+                      <Input
+                        {...registerMaterial("price")}
+                        focusBorderColor={"green.500"}
+                        type="text"
+                        onClick={() => {
+                          if (!isClicked) {
+                            setValue("price", "");
+                            setIsClicked(true);
+                          }
+                        }}
+                        value={formatCurrency(materialData.price)}
+                      />
+                      {errorsMaterial && errorsMaterial.price && (
+                        <FormHelperText>
+                          {errorsMaterial.price.message}
+                        </FormHelperText>
+                      )}
+                    </VStack>
                   </InputGroup>
                 </FormControl>
               </HStack>

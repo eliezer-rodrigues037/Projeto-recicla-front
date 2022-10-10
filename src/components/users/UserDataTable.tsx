@@ -170,7 +170,7 @@ export const UserDataTable = ({
                     <Td>{item?.cel}</Td>
                     {user?.role === "Admin" ? (
                       <Td>
-                        <Popover placement="left">
+                        <Popover placement="right">
                           <HStack spacing="0">
                             <PopoverTrigger>
                               <Button bg="none">

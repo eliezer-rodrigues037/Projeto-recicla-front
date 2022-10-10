@@ -162,7 +162,7 @@ export const MaterialsDataTable = ({
                     <Td>{material.status ? "Ativo" : "Inativo"}</Td>
                     {user?.role === "Admin" ? (
                       <Td>
-                        <Popover placement="left">
+                        <Popover placement="right">
                           <HStack spacing="0">
                             <PopoverTrigger>
                               <Button bg="none">
