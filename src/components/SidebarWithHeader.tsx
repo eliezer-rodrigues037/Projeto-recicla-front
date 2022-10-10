@@ -1,4 +1,10 @@
-import React, { ElementType, ReactNode } from "react";
+import React, {
+  Dispatch,
+  ElementType,
+  ReactNode,
+  SetStateAction,
+  useState,
+} from "react";
 import { useRouter } from "next/router";
 import {
   IconButton,
@@ -30,46 +36,56 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  Button,
+  AccordionButtonProps,
 } from "@chakra-ui/react";
-import { FiUsers, FiMenu, FiChevronDown } from "react-icons/fi";
+import { FiMenu, FiChevronDown } from "react-icons/fi";
+import { IoLocationSharp } from "react-icons/io5";
 import { FaSun, FaMoon } from "react-icons/fa";
 import { IconType } from "react-icons";
-import { ReactText } from "react";
+
 import { useAuth } from "../hooks/useAuth";
 import Image from "next/image";
-import { HiOutlineUser } from "react-icons/hi";
-import { MaterialsIcon, UserIcon } from "../assets/icons";
+
+import { DestiniesIcon, MaterialsIcon, UserIcon } from "../assets/icons";
 
 type LinkItemProps = {
   name: string;
-  pageLink: string;
-  icon: IconType | ElementType | undefined;
+  pageLink?: string;
+  icon?: IconType | ElementType | undefined;
   role: "user" | "corp" | "adm";
+  panel?: {
+    name: string;
+    pageLink: string;
+  }[];
 };
 
 const LinkItems: Array<LinkItemProps> = [
   {
     name: "Usuários",
-    pageLink: "/users/individual",
     icon: UserIcon,
     role: "adm",
-  },
-  {
-    name: "Individual",
-    pageLink: "/users/individual",
-    icon: undefined,
-    role: "adm",
-  },
-  {
-    name: "Corporativo",
-    pageLink: "/users/corp",
-    icon: undefined,
-    role: "adm",
+    panel: [
+      {
+        name: "Individual",
+        pageLink: "/users/individual",
+      },
+      {
+        name: "Corporativo",
+        pageLink: "/users/individual",
+      },
+    ],
   },
   {
     name: "Materiais",
     pageLink: "/materials",
     icon: MaterialsIcon,
+    role: "adm",
+  },
+  {
+    name: "Destinos",
+    pageLink: "/destinies",
+    icon: IoLocationSharp,
     role: "adm",
   },
 ];
@@ -110,6 +126,15 @@ interface SidebarProps extends BoxProps {
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   const { colorMode } = useColorMode();
+  const router = useRouter();
+
+  function getCurrentIndex(): number {
+    let i: number = 0;
+    LinkItems.map((item, index) => {
+      if (router.pathname === item.pageLink) i = index;
+    });
+    return i;
+  }
 
   return (
     <>
@@ -123,14 +148,10 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         h="full"
         {...rest}
       >
-        <Flex h="20" alignItems="center" mx="4" justifyContent="space-between">
+        <Flex h="20" alignItems="center" mx="4" justifyContent="center">
           <Image
             alt="Logo"
-            src={
-              colorMode === "dark"
-                ? "/static/images/logo.png"
-                : "/static/images/bear.png"
-            }
+            src="/static/images/ReciclaLogo.png"
             width={colorMode === "light" ? 50 : 200}
             height={50}
           />
@@ -139,55 +160,73 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             onClick={onClose}
           />
         </Flex>
-        <Flex
+        <Accordion
+          display="flex"
           h={"calc(100% - 80px)"}
           flexDirection={"column"}
           overflowY={"auto"}
+          defaultIndex={[getCurrentIndex()]}
+          onChange={getCurrentIndex}
+          allowToggle
+          allowMultiple
         >
-          {LinkItems?.map((link) => (
+          {LinkItems?.map((item, index) => (
             <NavItem
-              key={link.name}
-              icon={link.icon ? link.icon : undefined}
-              pageLink={link.pageLink}
+              key={item.name}
+              icon={item.icon ?? undefined}
+              pageLink={item.pageLink ?? undefined}
+              panel={item.panel ?? undefined}
             >
-              {link.name}
+              {item.name}
             </NavItem>
           ))}
-        </Flex>
+        </Accordion>
       </Box>
     </>
   );
 };
 
-interface NavItemProps extends FlexProps {
+interface NavItemProps extends AccordionButtonProps {
   icon: IconType | ElementType | undefined;
-  pageLink: string;
+  pageLink: string | undefined;
+  panel?: {
+    name: string;
+    pageLink: string;
+  }[];
 }
 
-const NavItem = ({ pageLink, icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({
+  pageLink,
+  icon,
+  panel,
+  children,
+
+  ...rest
+}: NavItemProps) => {
   const router = useRouter();
 
-  const isCurrentLinkSelected = router.pathname === pageLink && icon;
+  const isCurrentLinkSelected = router.pathname === pageLink;
 
   return (
-    <Link
-      onClick={() => router.push(pageLink)}
-      style={{ textDecoration: "none" }}
-      _focus={{ boxShadow: "none" }}
-    >
-      <Flex
+    <AccordionItem>
+      <AccordionButton
+        style={{ textDecoration: "none" }}
+        _focus={{ boxShadow: "none" }}
+        display="flex"
         align="center"
         p="4"
         role="group"
-        cursor="pointer"
         bg={icon ? "green.500" : ""}
         color={icon ? "#fff" : "black"}
         borderLeft={isCurrentLinkSelected ? "5px solid" : ""}
         borderLeftColor={isCurrentLinkSelected ? "black.900" : ""}
+        cursor="pointer"
         _hover={{
           bg: "green.500",
           color: "#fff",
         }}
+        _expanded={{ borderLeft: "5px solid", borderLeftColor: "black.900" }}
+        onClick={pageLink ? () => router.push(pageLink) : () => null}
         {...rest}
       >
         {icon && (
@@ -200,8 +239,22 @@ const NavItem = ({ pageLink, icon, children, ...rest }: NavItemProps) => {
           />
         )}
         <Text ml="4">{children}</Text>
-      </Flex>
-    </Link>
+      </AccordionButton>
+      {panel &&
+        panel.map((item) => (
+          <AccordionPanel
+            cursor="pointer"
+            _hover={{
+              bg: "green.500",
+              color: "#fff",
+            }}
+            key={item.name}
+            onClick={() => router.push(item.pageLink)}
+          >
+            {item.name}
+          </AccordionPanel>
+        ))}
+    </AccordionItem>
   );
 };
 

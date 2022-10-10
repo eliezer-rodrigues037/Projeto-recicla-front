@@ -3,13 +3,13 @@ import { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
 import { useQuery } from "react-query";
-import { AddMaterialModal } from "../components/materials/AddMaterialModal";
-import { MaterialsDataTable } from "../components/materials/MaterialsDataTable";
-import { SidebarWithHeader } from "../components/SidebarWithHeader";
-import { StdButton } from "../components/StdButton";
-import { useAuth } from "../hooks/useAuth";
-import api from "../services/api";
-import { MaterialsRows } from "../types/MaterialsRows";
+import { AddMaterialModal } from "../../components/materials/AddMaterialModal";
+import { MaterialsDataTable } from "../../components/materials/MaterialsDataTable";
+import { SidebarWithHeader } from "../../components/SidebarWithHeader";
+import { StdButton } from "../../components/StdButton";
+import { useAuth } from "../../hooks/useAuth";
+import api from "../../services/api";
+import { MaterialsRows } from "../../types/MaterialsRows";
 
 type IHandleGetAllUsersProps = {
   queryKey: Array<any>;
